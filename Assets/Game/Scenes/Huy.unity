@@ -886,7 +886,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 114480945186419424, guid: f77f88b14a477764bb65a49d28c02d33, type: 3}
       propertyPath: m_MovementRange
-      value: 200
+      value: 350
       objectReference: {fileID: 0}
     - target: {fileID: 114480945186419424, guid: f77f88b14a477764bb65a49d28c02d33, type: 3}
       propertyPath: m_DynamicOriginRange
