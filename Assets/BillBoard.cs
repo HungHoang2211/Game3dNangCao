@@ -2,10 +2,10 @@ using UnityEngine;
 
 public class BillBoard : MonoBehaviour
 {
-    public Transform camera;
+    public Transform cam;
 
     void LateUpdate()
     {
-        transform.LookAt(transform.position + camera.forward);
+        transform.LookAt(transform.position + cam.forward);
     }
 }
