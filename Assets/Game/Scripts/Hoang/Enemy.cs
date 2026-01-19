@@ -7,11 +7,15 @@ public class Enemy : MonoBehaviour
     public float turnSpeed;
     public float aggresionRange;
 
+    [Header("Attack data")]
+    public float attackRange;
+
     [Header("Idle info")]
     public float idleTime;
 
     [Header("Move data")]
     public float moveSpeed;
+    public float chaseSpeed;
 
     [SerializeField] private Transform[] patrolPoints;
     private int currentPatrolIndex;
@@ -43,9 +47,12 @@ public class Enemy : MonoBehaviour
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireSphere(transform.position, aggresionRange);
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
     }
     public void AnimationTrigger() => stateMachine.currentState.AnimationTrigger();
-    public bool PlayerInAggresionRange() => Vector3.Distance(transform.position, player.position) <= aggresionRange;
+    public bool PlayerInAggresionRange() => Vector3.Distance(transform.position, player.position) < aggresionRange;
+    public bool PlayerInAttackRange() => Vector3.Distance(transform.position, player.position) < attackRange;
 
     public Vector3 GetPatrolDestination()
     {

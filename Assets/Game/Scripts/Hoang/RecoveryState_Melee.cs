@@ -12,6 +12,8 @@ public class RecoveryState_Melee : EnemyState
     public override void Enter()
     {
         base.Enter();
+
+        enemy.agent.isStopped = true;
     }
 
     public override void Exit()
@@ -26,8 +28,6 @@ public class RecoveryState_Melee : EnemyState
         enemy.transform.rotation = enemy.FaceTarget(enemy.player.position);
 
         if (triggerCalled)
-        {
-            Debug.Log("Recovery finished, switching to Attack State");
-        }
+            stateMachine.ChangeState(enemy.chaseState);
     }
 }
