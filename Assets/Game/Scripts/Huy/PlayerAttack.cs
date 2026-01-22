@@ -1,39 +1,82 @@
-using UnityEngine;
-using UnityEngine.InputSystem;
+﻿using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
 {
-    public float attackRange = 1.5f;
+    [Header("Attack Stats")]
     public int damage = 10;
-    public float attackCooldown = 0.5f;
-    public Transform attackPoint;
-    public LayerMask enemyLayer;
+    public float attackRange = 3f;
+    public float attackSpeed = 1.5f; 
 
-    float nextAttackTime;
+    [Header("Range Visual")]
+    public GameObject attackRangeCircle;
 
-    public void OnAttack()
+    private float nextAttackTime;
+
+    void Start()
     {
-        if (Time.time < nextAttackTime) return;
-        nextAttackTime = Time.time + attackCooldown;
+        
+        if (attackRangeCircle != null)
+        {
+            attackRangeCircle.SetActive(false);
 
+            float diameter = attackRange * 2f;
+            attackRangeCircle.transform.localScale =
+                new Vector3(diameter, 0.05f, diameter);
+        }
+    }
+
+    void Update()
+    {
+        if (Input.GetMouseButton(0))
+        {
+            OnAttackHold();
+        }
+
+        if (Input.GetMouseButtonUp(0))
+        {
+            OnAttackRelease();
+        }
+    }
+
+    public void OnAttackHold()
+    {
+        ShowRange(true);
+
+        if (Time.time < nextAttackTime)
+            return;
+
+        nextAttackTime = Time.time + 1f / attackSpeed;
+
+        DoAttack();
+    }
+
+    public void OnAttackRelease()
+    {
+        ShowRange(false);
+    }
+
+    void DoAttack()
+    {
         Collider[] hits = Physics.OverlapSphere(
-            attackPoint.position,
-            attackRange,
-            enemyLayer
+            transform.position,
+            attackRange
         );
 
         foreach (Collider hit in hits)
         {
-            hit.SendMessage("TakeDamage", damage, SendMessageOptions.DontRequireReceiver);
-        }
+            EnemyHealth enemy =
+                hit.GetComponentInParent<EnemyHealth>();
 
-        Debug.Log("Attack!");
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
+        }
     }
 
-    void OnDrawGizmosSelected()
+    void ShowRange(bool show)
     {
-        if (attackPoint == null) return;
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        if (attackRangeCircle != null)
+            attackRangeCircle.SetActive(show);
     }
 }
