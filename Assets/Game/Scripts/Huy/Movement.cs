@@ -11,9 +11,12 @@ public class PlayerMove3D : MonoBehaviour
     private Vector3 velocity;
     private CharacterController controller;
 
+    Animator animator;
+
     void Awake()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     public void OnMove(InputValue value)
@@ -37,8 +40,12 @@ public class PlayerMove3D : MonoBehaviour
         }
 
         if (controller.isGrounded && velocity.y < 0)
+        {
             velocity.y = -2f;
+        }
+            
 
+        animator.SetFloat("Speed", moveInput.magnitude);
 
     }
 }

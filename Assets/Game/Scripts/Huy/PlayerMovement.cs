@@ -18,10 +18,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private LayerMask aimLayerMask;
     private Vector2 MoveInput;
     private Vector2 AimInput;
-    
+
+    Animator animator;
+
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        animator = GetComponentInChildren<Animator>();
     }
 
     private void Awake()
@@ -65,6 +68,7 @@ public class PlayerMovement : MonoBehaviour
         {
             characterController.Move(movementDirection * Time.deltaTime * walkSpeed);
         }
+        animator.SetFloat("Speed", movementDirection.magnitude);
     }
 
     private void OnEnable()
