@@ -63,22 +63,25 @@ public class PlayerAttack : MonoBehaviour
 
     void DoAttack()
     {
+
+        if (animator != null)
+        {
+            animator.ResetTrigger("Attack");
+            animator.SetTrigger("Attack");
+        }
         Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
-        //Animation chém ko biết nhét đúng ko
-        animator.ResetTrigger("Attack");
-        animator.SetTrigger("Attack");
+
+        Physics.OverlapSphere(transform.position, attackRange);
 
         foreach (Collider hit in hits)
         {
             EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
-
             if (enemy != null)
             {
                 enemy.TakeDamage(damage);
             }
         }
     }
-
     void ShowRange(bool show)
     {
         if (attackRangeCircle != null) 

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Animations;
 using UnityEngine.InputSystem;
 using UnityEngine.Rendering;
@@ -24,6 +24,7 @@ public class PlayerMovement : MonoBehaviour
     void Start()
     {
         characterController = GetComponent<CharacterController>();
+        // Lấy Animator ở object con (thường là Model nhân vật)
         animator = GetComponentInChildren<Animator>();
     }
 
@@ -37,10 +38,10 @@ public class PlayerMovement : MonoBehaviour
         controls.Character.Aim.performed += context => AimInput = context.ReadValue<Vector2>();
         controls.Character.Aim.canceled += context => AimInput = Vector2.zero;
     }
+
     void Update()
     {
         ApplyMovement();
-
         AimTowardsMouse();
     }
 
@@ -64,21 +65,32 @@ public class PlayerMovement : MonoBehaviour
     {
         movementDirection = new Vector3(MoveInput.x, 0, MoveInput.y);
 
+
+
         if (movementDirection.magnitude > 0)
         {
             characterController.Move(movementDirection * Time.deltaTime * walkSpeed);
         }
-        animator.SetFloat("Speed", movementDirection.magnitude);
+
+        // CẬP NHẬT ANIMATOR TẠI ĐÂY
+        if (animator != null)
+        {
+            // Gửi InputX (Trái/Phải) và InputY (Tiến/Lùi) vào Blend Tree
+            animator.SetFloat("InputX", MoveInput.x);
+            animator.SetFloat("InputY", MoveInput.y);
+
+            // Giữ lại Speed để Animator biết khi nào bạn đang di chuyển nói chung
+            animator.SetFloat("Speed", movementDirection.magnitude);
+        }
     }
 
     private void OnEnable()
     {
         controls.Enable();
     }
+
     private void OnDisable()
     {
         controls.Disable();
     }
-
-
 }
