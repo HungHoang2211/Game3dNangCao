@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMove3D : MonoBehaviour
@@ -43,9 +43,18 @@ public class PlayerMove3D : MonoBehaviour
         {
             velocity.y = -2f;
         }
-            
 
-        animator.SetFloat("Speed", moveInput.magnitude);
+
+        // CẬP NHẬT ANIMATOR TẠI ĐÂY
+        if (animator != null)
+        {
+            // hướng di chuyển theo LOCAL của nhân vật
+            Vector3 localMove = transform.InverseTransformDirection(move);
+
+            animator.SetFloat("InputX", localMove.x);
+            animator.SetFloat("InputY", localMove.z);
+            animator.SetFloat("Speed", move.magnitude);
+        }
 
     }
 }

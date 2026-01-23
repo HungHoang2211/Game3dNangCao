@@ -33,12 +33,12 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetMouseButton(0))
+        if (Input.GetKey(KeyCode.Space))
         {
             OnAttackHold();
         }
 
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetKeyUp(KeyCode.Space))
         {
             OnAttackRelease();
         }
@@ -70,8 +70,6 @@ public class PlayerAttack : MonoBehaviour
             animator.SetTrigger("Attack");
         }
         Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
-
-        Physics.OverlapSphere(transform.position, attackRange);
 
         foreach (Collider hit in hits)
         {

@@ -75,11 +75,11 @@ public class PlayerMovement : MonoBehaviour
         // CẬP NHẬT ANIMATOR TẠI ĐÂY
         if (animator != null)
         {
-            // Gửi InputX (Trái/Phải) và InputY (Tiến/Lùi) vào Blend Tree
-            animator.SetFloat("InputX", MoveInput.x);
-            animator.SetFloat("InputY", MoveInput.y);
+            // hướng di chuyển theo LOCAL của nhân vật
+            Vector3 localMove = transform.InverseTransformDirection(movementDirection);
 
-            // Giữ lại Speed để Animator biết khi nào bạn đang di chuyển nói chung
+            animator.SetFloat("InputX", localMove.x);
+            animator.SetFloat("InputY", localMove.z);
             animator.SetFloat("Speed", movementDirection.magnitude);
         }
     }
