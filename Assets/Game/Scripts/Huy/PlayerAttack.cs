@@ -11,6 +11,13 @@ public class PlayerAttack : MonoBehaviour
     public GameObject attackRangeCircle;
 
     private float nextAttackTime;
+    
+    Animator animator;
+
+    void Awake()
+    {
+        animator = GetComponentInChildren<Animator>();
+    }
 
     void Start()
     {
@@ -20,8 +27,7 @@ public class PlayerAttack : MonoBehaviour
             attackRangeCircle.SetActive(false);
 
             float diameter = attackRange * 2f;
-            attackRangeCircle.transform.localScale =
-                new Vector3(diameter, 0.05f, diameter);
+            attackRangeCircle.transform.localScale = new Vector3(diameter, 0.05f, diameter);
         }
     }
 
@@ -57,15 +63,14 @@ public class PlayerAttack : MonoBehaviour
 
     void DoAttack()
     {
-        Collider[] hits = Physics.OverlapSphere(
-            transform.position,
-            attackRange
-        );
+        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+        //Animation chém ko biết nhét đúng ko
+        animator.ResetTrigger("Attack");
+        animator.SetTrigger("Attack");
 
         foreach (Collider hit in hits)
         {
-            EnemyHealth enemy =
-                hit.GetComponentInParent<EnemyHealth>();
+            EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
 
             if (enemy != null)
             {
@@ -76,7 +81,10 @@ public class PlayerAttack : MonoBehaviour
 
     void ShowRange(bool show)
     {
-        if (attackRangeCircle != null)
-            attackRangeCircle.SetActive(show);
+        if (attackRangeCircle != null) 
+        { 
+            attackRangeCircle.SetActive(show); 
+        }
+           
     }
 }
