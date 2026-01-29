@@ -21,6 +21,9 @@ public class PlayerMovement : MonoBehaviour
 
     Animator animator;
 
+    [Header("Gravity")]
+    [SerializeField] public float gravity = -20f;
+    private float yVelocity;
     void Start()
     {
         characterController = GetComponent<CharacterController>();
@@ -65,12 +68,21 @@ public class PlayerMovement : MonoBehaviour
     {
         movementDirection = new Vector3(MoveInput.x, 0, MoveInput.y);
 
-
-
-        if (movementDirection.magnitude > 0)
+        if (characterController.isGrounded && yVelocity < 0)
         {
-            characterController.Move(movementDirection * Time.deltaTime * walkSpeed);
+            yVelocity = -2f;
         }
+
+        yVelocity += gravity * Time.deltaTime;
+
+        Vector3 move = movementDirection * walkSpeed + Vector3.up * yVelocity;
+
+        characterController.Move(move * Time.deltaTime);
+
+        //if (movementDirection.magnitude > 0)
+        //{
+        //    characterController.Move(movementDirection * Time.deltaTime * walkSpeed);
+        //}
 
         // CẬP NHẬT ANIMATOR TẠI ĐÂY
         if (animator != null)
