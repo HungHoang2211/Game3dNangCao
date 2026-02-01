@@ -88,4 +88,22 @@ public class PlayerAttack : MonoBehaviour
         }
            
     }
+    /*/kien attack 
+    void Attack()
+    { RaycastHit hit;
+        if(Physics.Raycast(transform.position,transform.forward,out hit,attackRange))
+
+        
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                EnemyKien enemy = hit.collider.GetComponent<EnemyKien>();
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(damage);
+                }
+            }
+        }
+    }
+    /*/
 }
