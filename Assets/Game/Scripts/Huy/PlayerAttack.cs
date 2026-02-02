@@ -71,14 +71,14 @@ public class PlayerAttack : MonoBehaviour
         }
         Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
 
-        //foreach (Collider hit in hits)
-        //{
-        //    EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
-        //    if (enemy != null)
-        //    {
-        //        enemy.TakeDamage(damage);
-        //    }
-        //}
+        foreach (Collider hit in hits)
+        {
+            EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
+        }
     }
     void ShowRange(bool show)
     {
