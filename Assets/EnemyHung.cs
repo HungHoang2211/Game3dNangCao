@@ -27,6 +27,7 @@ public class EnemyHung : MonoBehaviour
         }
 
         LookCoroutine = StartCoroutine(LookAt(Target.GetTransform()));
+
     }
 
     private IEnumerator LookAt(Transform Target)

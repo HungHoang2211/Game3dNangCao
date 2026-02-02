@@ -28,6 +28,7 @@ public class AttackRadiusHung : MonoBehaviour
             if (AttackCoroutine == null)
             {
                 AttackCoroutine = StartCoroutine(Attack());
+                Debug.Log("Attack");
             }
         }
     }

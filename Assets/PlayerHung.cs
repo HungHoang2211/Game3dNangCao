@@ -1,16 +1,22 @@
 using UnityEngine;
+using System.Collections;
 
-public class PlayerHung : MonoBehaviour
+public class PlayerHung : MonoBehaviour, IDamageableHung
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField]
+    private int Health = 300;
+    public void TakeDamage(int Damage)
     {
-        
+        Health -= Damage;
+
+        if (Health <= 0)
+        {
+            gameObject.SetActive(false);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    public Transform GetTransform()
     {
-        
+        return transform;
     }
 }
