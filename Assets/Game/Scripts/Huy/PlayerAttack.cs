@@ -5,13 +5,13 @@ public class PlayerAttack : MonoBehaviour
     [Header("Attack Stats")]
     public int damage = 10;
     public float attackRange = 3f;
-    public float attackSpeed = 1.5f; 
+    public float attackSpeed = 1.5f;
 
     [Header("Range Visual")]
     public GameObject attackRangeCircle;
 
     private float nextAttackTime;
-    
+
     Animator animator;
 
     void Awake()
@@ -21,7 +21,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
-        
+
         if (attackRangeCircle != null)
         {
             attackRangeCircle.SetActive(false);
@@ -71,21 +71,39 @@ public class PlayerAttack : MonoBehaviour
         }
         Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
 
-        //foreach (Collider hit in hits)
-        //{
-        //    EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
-        //    if (enemy != null)
-        //    {
-        //        enemy.TakeDamage(damage);
-        //    }
-        //}
+        foreach (Collider hit in hits)
+        {
+            //EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
+            //if (enemy != null)
+            //{
+            //    enemy.TakeDamage(damage);
+            //}
+        }
     }
     void ShowRange(bool show)
     {
-        if (attackRangeCircle != null) 
-        { 
-            attackRangeCircle.SetActive(show); 
+        if (attackRangeCircle != null)
+        {
+            attackRangeCircle.SetActive(show);
         }
-           
+
     }
+    /*/kien attack 
+    void Attack()
+    { RaycastHit hit;
+        if(Physics.Raycast(transform.position,transform.forward,out hit,attackRange))
+
+        
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                EnemyKien enemy = hit.collider.GetComponent<EnemyKien>();
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(damage);
+                }
+            }
+        }
+    }
+    /*/
 }
