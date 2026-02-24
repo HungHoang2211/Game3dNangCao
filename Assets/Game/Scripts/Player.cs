@@ -15,16 +15,24 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        // Example damage input for testing
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            TakeDamage(10);
-        }
+
     }
 
     void TakeDamage(int damage)
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
+        if(currentHealth <= 0)
+        {
+            currentHealth = 0;
+            healthBar.SetHealth(currentHealth);
+            Die();
+        }
+    }
+
+    void Die()
+    {
+
+        Debug.Log("Player die!");
     }
 }
