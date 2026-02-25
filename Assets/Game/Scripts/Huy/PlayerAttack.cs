@@ -3,8 +3,8 @@
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Weapon")]
-    public WeaponStatus currentWeapon;
-    public WeaponStatus defaultWeapon;
+    public ItemStatus currentWeapon;
+    public ItemStatus defaultWeapon;
     [Header("Range Visual")]
     public GameObject attackRangeCircle;
 
@@ -100,7 +100,7 @@ public class PlayerAttack : MonoBehaviour
 
     }
 
-    public void EquipWeapon(WeaponStatus newWeapon)
+    public void EquipWeapon(ItemStatus newWeapon)
     {
         if (newWeapon == null) return;
 
@@ -109,10 +109,10 @@ public class PlayerAttack : MonoBehaviour
         if (currentWeaponObject != null)
             Destroy(currentWeaponObject);
 
-        if (newWeapon.weaponPrefab != null)
+        if (newWeapon.itemPrefab != null)
         {
             currentWeaponObject = Instantiate(
-                newWeapon.weaponPrefab,
+                newWeapon.itemPrefab,
                 weaponHolder
             );
 
