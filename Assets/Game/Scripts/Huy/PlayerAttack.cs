@@ -2,11 +2,19 @@
 
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("Attack Stats")]
-    public WeaponStat currentWeapon;
-    public WeaponStat defaultWeapon;
+    [Header("Weapon")]
+    public ItemStatus currentWeapon;
+    public ItemStatus defaultWeapon;
     [Header("Range Visual")]
     public GameObject attackRangeCircle;
+
+    [Header("Weapon Holder")]
+    public Transform weaponHolder;
+
+    public GameObject currentWeaponObject;
+
+    [Header("Player stat")]
+    public PlayerStat playerDamage;
 
     private float nextAttackTime;
 
@@ -20,15 +28,15 @@ public class PlayerAttack : MonoBehaviour
     void Start()
     {
         if (currentWeapon == null)
-            currentWeapon = defaultWeapon;
-
-        if (attackRangeCircle != null)
         {
-            attackRangeCircle.SetActive(false);
+            EquipWeapon(defaultWeapon);
+        }         
+        else
+            EquipWeapon(currentWeapon);
 
-            float diameter = currentWeapon.attackRange * 2f;
-            attackRangeCircle.transform.localScale = new Vector3(diameter, 0.05f, diameter);
-        }
+        UpdateRangeVisual();
+
+       
     }
 
     void Update()
@@ -43,6 +51,7 @@ public class PlayerAttack : MonoBehaviour
             OnAttackRelease();
         }
     }
+
 
     public void OnAttackHold()
     {
@@ -77,10 +86,10 @@ public class PlayerAttack : MonoBehaviour
         //    EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
         //    if (enemy != null)
         //    {
-        //        enemy.TakeDamage(currentWeapon.damage);
+        //        enemy.TakeDamage(currentWeapon.damage + (playerDamage.damage/2));
         //    }
         //}
-        Debug.Log("Slash");
+        //Debug.Log("Slash");
     }
     void ShowRange(bool show)
     {
@@ -91,9 +100,35 @@ public class PlayerAttack : MonoBehaviour
 
     }
 
-    public void EquipWeapon(WeaponStat newWeapon)
+    public void EquipWeapon(ItemStatus newWeapon)
     {
+        if (newWeapon == null) return;
+
         currentWeapon = newWeapon;
+
+        if (currentWeaponObject != null)
+            Destroy(currentWeaponObject);
+
+        if (newWeapon.itemPrefab != null)
+        {
+            currentWeaponObject = Instantiate(
+                newWeapon.itemPrefab,
+                weaponHolder
+            );
+
+            currentWeaponObject.transform.localPosition = Vector3.zero;
+            currentWeaponObject.transform.localRotation = Quaternion.identity;
+        }
+    }
+
+    void UpdateRangeVisual()
+    {
+        if (attackRangeCircle != null && currentWeapon != null)
+        {
+            float diameter = currentWeapon.attackRange * 2f;
+            attackRangeCircle.transform.localScale =
+                new Vector3(diameter, 0.05f, diameter);
+        }
     }
 
     /*/kien attack 

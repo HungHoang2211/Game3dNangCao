@@ -8,8 +8,8 @@ public class QuestManager : MonoBehaviour
     public int killTarget = 5;
     private int currentKill = 0;
 
-    [Header("Reward")]
-    public WeaponStat rewardWeapon;
+    //[Header("Reward")]
+    //public WeaponStat rewardWeapon;
 
     [Header("UI")]
     public TextMeshProUGUI questText;
