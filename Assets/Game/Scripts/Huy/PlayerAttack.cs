@@ -3,10 +3,8 @@
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack Stats")]
-    public int damage = 10;
-    public float attackRange = 3f;
-    public float attackSpeed = 1.5f;
-
+    public WeaponStat currentWeapon;
+    public WeaponStat defaultWeapon;
     [Header("Range Visual")]
     public GameObject attackRangeCircle;
 
@@ -21,12 +19,14 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
+        if (currentWeapon == null)
+            currentWeapon = defaultWeapon;
 
         if (attackRangeCircle != null)
         {
             attackRangeCircle.SetActive(false);
 
-            float diameter = attackRange * 2f;
+            float diameter = currentWeapon.attackRange * 2f;
             attackRangeCircle.transform.localScale = new Vector3(diameter, 0.05f, diameter);
         }
     }
@@ -46,12 +46,13 @@ public class PlayerAttack : MonoBehaviour
 
     public void OnAttackHold()
     {
+        if (currentWeapon == null) return;
         ShowRange(true);
 
         if (Time.time < nextAttackTime)
             return;
 
-        nextAttackTime = Time.time + 1f / attackSpeed;
+        nextAttackTime = Time.time + 1f / currentWeapon.attackSpeed;
 
         DoAttack();
     }
@@ -63,22 +64,23 @@ public class PlayerAttack : MonoBehaviour
 
     void DoAttack()
     {
-
+        if (currentWeapon == null) return;
         if (animator != null)
         {
             animator.ResetTrigger("Attack");
             animator.SetTrigger("Attack");
         }
-        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+        Collider[] hits = Physics.OverlapSphere(transform.position, currentWeapon.attackRange);
 
         foreach (Collider hit in hits)
         {
             //EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
             //if (enemy != null)
             //{
-            //    enemy.TakeDamage(damage);
+            //    enemy.TakeDamage(currentWeapon.damage);
             //}
         }
+        Debug.Log("Slash");
     }
     void ShowRange(bool show)
     {
