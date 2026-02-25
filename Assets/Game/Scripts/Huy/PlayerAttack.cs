@@ -72,14 +72,14 @@ public class PlayerAttack : MonoBehaviour
         }
         Collider[] hits = Physics.OverlapSphere(transform.position, currentWeapon.attackRange);
 
-        foreach (Collider hit in hits)
-        {
-            //EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
-            //if (enemy != null)
-            //{
-            //    enemy.TakeDamage(currentWeapon.damage);
-            //}
-        }
+        //foreach (Collider hit in hits)
+        //{
+        //    EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
+        //    if (enemy != null)
+        //    {
+        //        enemy.TakeDamage(currentWeapon.damage);
+        //    }
+        //}
         Debug.Log("Slash");
     }
     void ShowRange(bool show)
@@ -90,6 +90,12 @@ public class PlayerAttack : MonoBehaviour
         }
 
     }
+
+    public void EquipWeapon(WeaponStat newWeapon)
+    {
+        currentWeapon = newWeapon;
+    }
+
     /*/kien attack 
     void Attack()
     { RaycastHit hit;
