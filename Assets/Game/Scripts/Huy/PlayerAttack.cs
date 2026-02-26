@@ -86,7 +86,7 @@ public class PlayerAttack : MonoBehaviour
         //    EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
         //    if (enemy != null)
         //    {
-        //        enemy.TakeDamage(currentWeapon.damage + (playerDamage.damage/2));
+        //        enemy.TakeDamage(currentWeapon.damage + (playerDamage.damage / 2));
         //    }
         //}
         //Debug.Log("Slash");
