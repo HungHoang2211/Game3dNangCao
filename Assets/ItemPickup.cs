@@ -2,19 +2,19 @@
 
 public class ItemPickup : MonoBehaviour
 {
-    public ItemStatus itemData; // Asset ScriptableObject của item này
+    public ItemStatus itemData;
 
     private void OnTriggerEnter(Collider other)
     {
-        // Kiểm tra xem đối tượng va chạm có Inventory không
-        Inventory inventory = other.GetComponent<Inventory>();
+        // Thay vì tìm Inventory trên Player, ta tìm InventoryManager
+        Inventory inventory = FindObjectOfType<Inventory>();
         if (inventory != null)
         {
             bool added = inventory.AddItem(itemData);
             if (added)
             {
-                Debug.Log("Player đã nhặt: " + itemData.itemName);
-                Destroy(gameObject); // Xóa item trong thế giới sau khi nhặt
+                Debug.Log("Đã nhặt: " + itemData.itemName);
+                Destroy(gameObject);
             }
         }
     }

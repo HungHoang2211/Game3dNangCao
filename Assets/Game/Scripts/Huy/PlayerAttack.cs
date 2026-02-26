@@ -20,6 +20,8 @@ public class PlayerAttack : MonoBehaviour
 
     Animator animator;
 
+    public EquipmentUI equipmentUI;
+
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -81,15 +83,15 @@ public class PlayerAttack : MonoBehaviour
         }
         Collider[] hits = Physics.OverlapSphere(transform.position, currentWeapon.attackRange);
 
-        //foreach (Collider hit in hits)
-        //{
-        //    EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
-        //    if (enemy != null)
-        //    {
-        //        enemy.TakeDamage(currentWeapon.damage + (playerDamage.damage / 2));
-        //    }
-        //}
-        //Debug.Log("Slash");
+        foreach (Collider hit in hits)
+        {
+            EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(currentWeapon.damage + (playerDamage.damage / 2));
+            }
+        }
+        Debug.Log("Slash");
     }
     void ShowRange(bool show)
     {
@@ -102,24 +104,41 @@ public class PlayerAttack : MonoBehaviour
 
     public void EquipWeapon(ItemStatus newWeapon)
     {
-        if (newWeapon == null) return;
+        if (newWeapon == null)
+        {
+            Debug.LogWarning("EquipWeapon: newWeapon null!");
+            return;
+        }
+
+        Debug.Log("EquipWeapon: Trang bị " + newWeapon.itemName);
 
         currentWeapon = newWeapon;
 
         if (currentWeaponObject != null)
+        {
+            Debug.Log("EquipWeapon: Hủy vũ khí cũ " + currentWeaponObject.name);
             Destroy(currentWeaponObject);
+        }
 
         if (newWeapon.itemPrefab != null)
         {
-            currentWeaponObject = Instantiate(
-                newWeapon.itemPrefab,
-                weaponHolder
-            );
-
+            currentWeaponObject = Instantiate(newWeapon.itemPrefab, weaponHolder);
             currentWeaponObject.transform.localPosition = Vector3.zero;
             currentWeaponObject.transform.localRotation = Quaternion.identity;
+            Debug.Log("EquipWeapon: Đã instantiate prefab " + newWeapon.itemPrefab.name);
+        }
+
+        if (equipmentUI != null)
+        {
+            Debug.Log("EquipWeapon: Cập nhật UI với " + newWeapon.itemName);
+            equipmentUI.UpdateWeapon(newWeapon);
+        }
+        else
+        {
+            Debug.LogWarning("EquipWeapon: equipmentUI chưa được gán trong Inspector!");
         }
     }
+
 
     void UpdateRangeVisual()
     {
@@ -131,22 +150,5 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    /*/kien attack 
-    void Attack()
-    { RaycastHit hit;
-        if(Physics.Raycast(transform.position,transform.forward,out hit,attackRange))
-
-        
-        {
-            if (hit.collider.CompareTag("Enemy"))
-            {
-                EnemyKien enemy = hit.collider.GetComponent<EnemyKien>();
-                if (enemy != null)
-                {
-                    enemy.TakeDamage(damage);
-                }
-            }
-        }
-    }
-    /*/
+   
 }
