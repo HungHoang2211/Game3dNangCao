@@ -28,33 +28,36 @@ public class PlayerMove3D : MonoBehaviour
     {
         Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
 
-        controller.Move(move * speed * Time.deltaTime);
-
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
-
-        if(move.sqrMagnitude > 0.001f)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(move);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotateSpeed * Time.deltaTime);
-        }
-
         if (controller.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
         }
 
+        velocity.y += gravity * Time.deltaTime;
 
-        // CẬP NHẬT ANIMATOR TẠI ĐÂY
+        Vector3 finalMove =
+            move * speed +
+            Vector3.up * velocity.y;
+
+        controller.Move(finalMove * Time.deltaTime);
+
+        if (move.sqrMagnitude > 0.001f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(move);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                rotateSpeed * Time.deltaTime
+            );
+        }
+
         if (animator != null)
         {
-            // hướng di chuyển theo LOCAL của nhân vật
             Vector3 localMove = transform.InverseTransformDirection(move);
-
             animator.SetFloat("InputX", localMove.x);
             animator.SetFloat("InputY", localMove.z);
             animator.SetFloat("Speed", move.magnitude);
         }
-
     }
+
 }

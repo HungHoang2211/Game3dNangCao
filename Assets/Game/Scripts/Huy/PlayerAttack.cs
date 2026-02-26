@@ -2,16 +2,22 @@
 
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("Attack Stats")]
-    public int damage = 10;
-    public float attackRange = 3f;
-    public float attackSpeed = 1.5f; 
-
+    [Header("Weapon")]
+    public ItemStatus currentWeapon;
+    public ItemStatus defaultWeapon;
     [Header("Range Visual")]
     public GameObject attackRangeCircle;
 
+    [Header("Weapon Holder")]
+    public Transform weaponHolder;
+
+    public GameObject currentWeaponObject;
+
+    [Header("Player stat")]
+    public PlayerStat playerDamage;
+
     private float nextAttackTime;
-    
+
     Animator animator;
 
     void Awake()
@@ -21,14 +27,16 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
-        
-        if (attackRangeCircle != null)
+        if (currentWeapon == null)
         {
-            attackRangeCircle.SetActive(false);
+            EquipWeapon(defaultWeapon);
+        }         
+        else
+            EquipWeapon(currentWeapon);
 
-            float diameter = attackRange * 2f;
-            attackRangeCircle.transform.localScale = new Vector3(diameter, 0.05f, diameter);
-        }
+        UpdateRangeVisual();
+
+       
     }
 
     void Update()
@@ -44,14 +52,16 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+
     public void OnAttackHold()
     {
+        if (currentWeapon == null) return;
         ShowRange(true);
 
         if (Time.time < nextAttackTime)
             return;
 
-        nextAttackTime = Time.time + 1f / attackSpeed;
+        nextAttackTime = Time.time + 1f / currentWeapon.attackSpeed;
 
         DoAttack();
     }
@@ -63,29 +73,80 @@ public class PlayerAttack : MonoBehaviour
 
     void DoAttack()
     {
-
+        if (currentWeapon == null) return;
         if (animator != null)
         {
             animator.ResetTrigger("Attack");
             animator.SetTrigger("Attack");
         }
-        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+        Collider[] hits = Physics.OverlapSphere(transform.position, currentWeapon.attackRange);
 
         //foreach (Collider hit in hits)
         //{
         //    EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
         //    if (enemy != null)
         //    {
-        //        enemy.TakeDamage(damage);
+        //        enemy.TakeDamage(currentWeapon.damage + (playerDamage.damage / 2));
         //    }
         //}
+        //Debug.Log("Slash");
     }
     void ShowRange(bool show)
     {
-        if (attackRangeCircle != null) 
-        { 
-            attackRangeCircle.SetActive(show); 
+        if (attackRangeCircle != null)
+        {
+            attackRangeCircle.SetActive(show);
         }
-           
+
     }
+
+    public void EquipWeapon(ItemStatus newWeapon)
+    {
+        if (newWeapon == null) return;
+
+        currentWeapon = newWeapon;
+
+        if (currentWeaponObject != null)
+            Destroy(currentWeaponObject);
+
+        if (newWeapon.itemPrefab != null)
+        {
+            currentWeaponObject = Instantiate(
+                newWeapon.itemPrefab,
+                weaponHolder
+            );
+
+            currentWeaponObject.transform.localPosition = Vector3.zero;
+            currentWeaponObject.transform.localRotation = Quaternion.identity;
+        }
+    }
+
+    void UpdateRangeVisual()
+    {
+        if (attackRangeCircle != null && currentWeapon != null)
+        {
+            float diameter = currentWeapon.attackRange * 2f;
+            attackRangeCircle.transform.localScale =
+                new Vector3(diameter, 0.05f, diameter);
+        }
+    }
+
+    /*/kien attack 
+    void Attack()
+    { RaycastHit hit;
+        if(Physics.Raycast(transform.position,transform.forward,out hit,attackRange))
+
+        
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                EnemyKien enemy = hit.collider.GetComponent<EnemyKien>();
+                if (enemy != null)
+                {
+                    enemy.TakeDamage(damage);
+                }
+            }
+        }
+    }
+    /*/
 }
