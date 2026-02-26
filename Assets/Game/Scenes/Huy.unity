@@ -15028,7 +15028,7 @@ GameObject:
   - component: {fileID: 374769951}
   m_Layer: 0
   m_Name: Capsule
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -39096,7 +39096,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efe71751990c3aa43be0f5f4f2dadf85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  fireBallPrefab: {fileID: 7372593481476295022, guid: c89ae959e7e4c5f4bbada75b99bf2ef7, type: 3}
+  fireBallPrefab: {fileID: 2972392977303283589, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
   firePoint: {fileID: 5102316047987753970}
   cooldown: 2
 --- !u!1660057539 &9223372036854775807
