@@ -4,7 +4,7 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     [Header("References")]
-    public Transform player; // Kéo thả Player vào đây hoặc để code tự tìm
+    public Transform player;
     public Animator animator;
 
     [Header("Settings")]
@@ -13,18 +13,16 @@ public class EnemyAI : MonoBehaviour
     public float patrolRadius = 20f;
     public float attackCooldown = 2f;
     public float patrolIdleTime = 3f;
-    public float rotationSpeed = 7f;
-    public float attackDuration = 1.0f; // Thời gian diễn ra animation đánh
+    public float rotationSpeed = 15f; // Tăng tốc độ xoay để bắt kịp Player nhanh hơn
+    public float attackDuration = 1.0f;
 
     private NavMeshAgent agent;
     private float cooldownTimer;
     private float idleTimer;
     private float attackTimer;
 
-    private Vector3 patrolPoint;
-    private bool isPatrolling;
-    private bool isIdle;
     private bool isAttacking;
+    private bool isIdle;
 
     private enum State { Patrol, Chase, Attack }
     private State currentState;
@@ -32,9 +30,10 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = false;
+
         if (animator == null) animator = GetComponentInChildren<Animator>();
 
-        // Tự động tìm Player nếu chưa gán
         if (player == null)
         {
             GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
@@ -49,26 +48,37 @@ public class EnemyAI : MonoBehaviour
     {
         if (player == null) return;
 
-        cooldownTimer -= Time.deltaTime;
-        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+        // Giảm cooldown liên tục
+        if (cooldownTimer > 0) cooldownTimer -= Time.deltaTime;
 
-        // Xử lý thời gian chờ sau khi đánh
+        // XỬ LÝ KHI ĐANG TRONG TRẠNG THÁI TẤN CÔNG
         if (isAttacking)
         {
+            agent.velocity = Vector3.zero;
             attackTimer -= Time.deltaTime;
+
+            // Xoay nhanh về phía player khi đang đánh để đòn đánh không bị lệch
+            SmoothLookAt(player.position);
+
             if (attackTimer <= 0f)
             {
                 isAttacking = false;
+                agent.isStopped = false;
             }
-            return; // Khi đang đánh thì không thực hiện các logic di chuyển bên dưới
+            return;
         }
 
-        // Logic chuyển đổi trạng thái
+        float distanceToPlayer = Vector3.Distance(transform.position, player.position);
+
+        // KIỂM TRA ĐIỀU KIỆN ĐÁNH NGAY LẬP TỨC
         if (distanceToPlayer <= attackRange && cooldownTimer <= 0f)
         {
-            currentState = State.Attack;
+            Attack(); // Gọi trực tiếp để giảm delay do switch case
+            return;
         }
-        else if (distanceToPlayer <= detectionRadius)
+
+        // CHUYỂN TRẠNG THÁI DI CHUYỂN
+        if (distanceToPlayer <= detectionRadius)
         {
             currentState = State.Chase;
         }
@@ -77,19 +87,24 @@ public class EnemyAI : MonoBehaviour
             currentState = State.Patrol;
         }
 
-        // Thực thi trạng thái
+        ExecuteMovementState();
+
+        // ĐỒNG BỘ ANIMATION
+        animator.SetBool("isWalking", agent.velocity.magnitude > 0.1f);
+
+        if (agent.velocity.sqrMagnitude > 0.1f)
+        {
+            SmoothLookAt(transform.position + agent.velocity);
+        }
+    }
+
+    void ExecuteMovementState()
+    {
         switch (currentState)
         {
             case State.Patrol: Patrol(); break;
             case State.Chase: ChasePlayer(); break;
-            case State.Attack: Attack(); break;
         }
-
-        // Đồng bộ animation chạy/đi bộ
-        animator.SetBool("isWalking", agent.velocity.magnitude > 0.1f);
-
-        if (!isAttacking)
-            RotateTowardsMovementDirection();
     }
 
     void Patrol()
@@ -99,17 +114,16 @@ public class EnemyAI : MonoBehaviour
             idleTimer += Time.deltaTime;
             if (idleTimer >= patrolIdleTime)
             {
+                isIdle = false;
                 SetNewPatrolPoint();
-                idleTimer = 0f;
             }
             return;
         }
 
-        if (!isPatrolling || agent.remainingDistance < 0.5f)
+        if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
         {
             isIdle = true;
-            isPatrolling = false;
-            agent.ResetPath();
+            idleTimer = 0f;
         }
     }
 
@@ -118,43 +132,41 @@ public class EnemyAI : MonoBehaviour
         Vector3 randomDirection = Random.insideUnitSphere * patrolRadius + transform.position;
         if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, patrolRadius, 1))
         {
-            patrolPoint = hit.position;
-            agent.SetDestination(patrolPoint);
-            isPatrolling = true;
-            isIdle = false;
+            agent.SetDestination(hit.position);
+            agent.isStopped = false;
         }
     }
 
     void ChasePlayer()
     {
         isIdle = false;
-        isPatrolling = false;
-        if (agent.isOnNavMesh)
-            agent.SetDestination(player.position);
+        agent.isStopped = false;
+        agent.SetDestination(player.position);
     }
 
     void Attack()
     {
         isAttacking = true;
+        agent.isStopped = true;
+        agent.velocity = Vector3.zero;
+        agent.ResetPath();
+
         cooldownTimer = attackCooldown;
         attackTimer = attackDuration;
 
-        agent.ResetPath(); // Dừng di chuyển khi đánh
-
-        // Quay mặt về phía Player
-        Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
-        transform.LookAt(lookPos);
-
-        // Kích hoạt animation đánh
-        animator.ResetTrigger("AttackVu"); // Đảm bảo trigger được reset trước khi kích hoạt
+        // Reset Trigger trước khi Set để đảm bảo không bị dồn lệnh (nếu có lỗi logic khác)
+        animator.ResetTrigger("AttackVu");
         animator.SetTrigger("AttackVu");
     }
 
-    void RotateTowardsMovementDirection()
+    void SmoothLookAt(Vector3 targetPos)
     {
-        if (agent.velocity.sqrMagnitude > 0.1f)
+        Vector3 direction = (targetPos - transform.position).normalized;
+        direction.y = 0;
+
+        if (direction != Vector3.zero)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(agent.velocity.normalized);
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
     }
