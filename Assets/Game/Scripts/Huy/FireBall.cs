@@ -3,7 +3,7 @@ using UnityEngine;
 public class FireBall : MonoBehaviour
 {
     public float speed = 10f;
-    public int damage = 10;
+    public int damage = 50;
     public float lifeTime = 5f;
 
     public GameObject effect;
@@ -22,11 +22,11 @@ public class FireBall : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            //EnemyHealth enemy = other.GetComponent<EnemyHealth>();
-            //if (enemy != null)
-            //{
-            //    enemy.TakeDamage(damage);
-            //}
+            EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+            }
 
             if (effect != null)
             {
