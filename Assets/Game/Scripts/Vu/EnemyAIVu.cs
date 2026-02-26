@@ -146,6 +146,7 @@ public class EnemyAI : MonoBehaviour
         transform.LookAt(lookPos);
 
         // Kích hoạt animation đánh
+        animator.ResetTrigger("AttackVu"); // Đảm bảo trigger được reset trước khi kích hoạt
         animator.SetTrigger("AttackVu");
     }
 
