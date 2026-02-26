@@ -103,7 +103,7 @@ public class Enemy_MeleeH : Enemy_Hoang
     {
         base.GetHit();
 
-        if (healthPoints <= 0)
+        if (healthPoints.currentHp <= 0)
             stateMachine_Hoang.ChangeState_Hoang(deadState);
     }
 

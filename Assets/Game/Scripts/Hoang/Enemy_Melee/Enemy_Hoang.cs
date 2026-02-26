@@ -4,7 +4,7 @@ using System.Collections;
 
 public class Enemy_Hoang : MonoBehaviour
 {
-    [SerializeField] protected int healthPoints = 20;
+    public EnemyHealth healthPoints;
 
     [Header("Idle data")]
     public float idleTime;
@@ -71,7 +71,7 @@ public class Enemy_Hoang : MonoBehaviour
     public virtual void GetHit()
     {
         EnterBattleMode();
-        healthPoints--;
+        healthPoints.currentHp--;
     }
 
     public virtual void DeathImpact(Vector3 force, Vector3 hitPoint, Rigidbody rb)

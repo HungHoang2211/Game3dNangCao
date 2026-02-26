@@ -148,6 +148,14 @@ public class EnemyAI : MonoBehaviour
     void Attack()
     {
         isAttacking = true;
+
+        // Gây damage trực tiếp cho player đang target
+        Player playerHealth = player.GetComponent<Player>();
+        if (playerHealth != null)
+        {
+            playerHealth.TakeDamage(Damage);
+        }
+
         agent.isStopped = true;
         agent.velocity = Vector3.zero;
         agent.ResetPath();
@@ -155,7 +163,6 @@ public class EnemyAI : MonoBehaviour
         cooldownTimer = attackCooldown;
         attackTimer = attackDuration;
 
-        // Reset Trigger trước khi Set để đảm bảo không bị dồn lệnh (nếu có lỗi logic khác)
         animator.ResetTrigger("AttackVu");
         animator.SetTrigger("AttackVu");
     }
@@ -171,15 +178,5 @@ public class EnemyAI : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
         }
     }
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            Player playerHealth = other.GetComponent<Player>();
-            if (playerHealth != null)
-            {
-                playerHealth.TakeDamage(Damage);
-        }
-        }
-    }
+  
 }

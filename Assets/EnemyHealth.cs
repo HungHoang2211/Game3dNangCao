@@ -15,6 +15,7 @@ public class EnemyHealth : MonoBehaviour
 
         if (currentHp <= 0)
         {
+            Destroy(gameObject);
             Die();
         }
     }
@@ -27,7 +28,7 @@ public class EnemyHealth : MonoBehaviour
         {
             QuestManager.Instance.OnEnemyKilled();
         }
-        Destroy(gameObject);
+
         DropItem();
         Debug.Log("Enemy Die");
     }
