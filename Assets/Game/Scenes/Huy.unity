@@ -8044,7 +8044,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5102316047752364240, guid: c221ca113bd2c6847887aae336c65708, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.08
+      value: 0.026
       objectReference: {fileID: 0}
     - target: {fileID: 5102316047752364240, guid: c221ca113bd2c6847887aae336c65708, type: 3}
       propertyPath: m_LocalRotation.w
@@ -14104,6 +14104,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 5102316047752364240, guid: c221ca113bd2c6847887aae336c65708, type: 3}
       insertIndex: -1
       addedObject: {fileID: 44766800}
+    - targetCorrespondingSourceObject: {fileID: 5102316047752364240, guid: c221ca113bd2c6847887aae336c65708, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 553830831}
     - targetCorrespondingSourceObject: {fileID: 5102316048908904846, guid: c221ca113bd2c6847887aae336c65708, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1429068464}
@@ -14610,7 +14613,7 @@ Transform:
   m_GameObject: {fileID: 330585543}
   serializedVersion: 2
   m_LocalRotation: {x: 0.32284385, y: 0, z: 0, w: 0.9464523}
-  m_LocalPosition: {x: -0.02, y: 13.4, z: -9.17}
+  m_LocalPosition: {x: -0.02, y: 13.4, z: -9.224}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17232,6 +17235,37 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &553830830
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 553830831}
+  m_Layer: 0
+  m_Name: FIrePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &553830831
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 553830830}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0.088, y: 0.76, z: -0.072}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5102316047987753970}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &553960433
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19615,7 +19649,7 @@ Transform:
   m_GameObject: {fileID: 717401478}
   serializedVersion: 2
   m_LocalRotation: {x: 0.32284385, y: 0, z: 0, w: 0.9464523}
-  m_LocalPosition: {x: -0.02, y: 13.4, z: -9.17}
+  m_LocalPosition: {x: -0.02, y: 13.4, z: -9.224}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -39097,7 +39131,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fireBallPrefab: {fileID: 2972392977303283589, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
-  firePoint: {fileID: 5102316047987753970}
+  firePoint: {fileID: 553830831}
   cooldown: 2
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
