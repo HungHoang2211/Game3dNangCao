@@ -22,6 +22,8 @@ public class PlayerAttack : MonoBehaviour
 
     public EquipmentUI equipmentUI;
 
+    public Transform spawnPoint;
+    
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -29,6 +31,8 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
+        transform.position = spawnPoint.position;
+
         if (currentWeapon == null)
         {
             EquipWeapon(defaultWeapon);

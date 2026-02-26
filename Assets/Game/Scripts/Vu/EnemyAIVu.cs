@@ -24,6 +24,7 @@ public class EnemyAI : MonoBehaviour
     private bool isAttacking;
     private bool isIdle;
 
+    public int Damage = 10;
     private enum State { Patrol, Chase, Attack }
     private State currentState;
 
@@ -168,6 +169,17 @@ public class EnemyAI : MonoBehaviour
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            Player playerHealth = other.GetComponent<Player>();
+            if (playerHealth != null)
+            {
+                playerHealth.TakeDamage(Damage);
+        }
         }
     }
 }
