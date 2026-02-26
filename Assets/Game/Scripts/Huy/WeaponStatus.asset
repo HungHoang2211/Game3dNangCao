@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8315afe05dd1794438f7983e772a75e2, type: 3}
   m_Name: WeaponStatus
   m_EditorClassIdentifier: 
-  weaponName: Katana
+  itemName: Katana
+  itemIcon: {fileID: 0}
   attackSpeed: 1.5
   attackRange: 3
   damage: 10
-  weaponPrefab: {fileID: 401752947605086326, guid: 98e6ab24309e62046822af1f49e42473, type: 3}
+  hp: 0
+  itemPrefab: {fileID: 401752947605086326, guid: 98e6ab24309e62046822af1f49e42473, type: 3}

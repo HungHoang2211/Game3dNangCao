@@ -5,7 +5,7 @@ public class PlayerStat : ScriptableObject
 {
     [Header("Stat")]
     public int damage;
-    public float health;
+    public int health;
     public float speed;
     public int level = 0;
 

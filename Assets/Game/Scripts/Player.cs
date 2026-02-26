@@ -2,15 +2,17 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public int maxHealth = 100;
+    [Header("Player Health")]
+    public PlayerStat playerStat;
+
     public int currentHealth;
 
     public HealthBar healthBar;
 
     void Start()
     {
-        currentHealth = maxHealth;
-        healthBar.SetMaxHealth(maxHealth);
+        currentHealth = playerStat.health;
+        healthBar.SetMaxHealth(playerStat.health);
     }
 
     private void Update()
@@ -18,16 +20,17 @@ public class Player : MonoBehaviour
 
     }
 
-    void TakeDamage(int damage)
+    public void TakeDamage(int damage)
     {
         currentHealth -= damage;
         healthBar.SetHealth(currentHealth);
-        if(currentHealth <= 0)
+        if (currentHealth <= 0)
         {
             currentHealth = 0;
             healthBar.SetHealth(currentHealth);
             Die();
         }
+        
     }
 
     void Die()
