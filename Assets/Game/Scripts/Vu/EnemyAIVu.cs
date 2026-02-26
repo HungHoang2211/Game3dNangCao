@@ -4,9 +4,8 @@ using UnityEngine.AI;
 public class EnemyAI : MonoBehaviour
 {
     [Header("References")]
-    public Transform player;
+    public Transform player; // Kéo thả Player vào đây hoặc để code tự tìm
     public Animator animator;
-    public HealthVu healthVu;
 
     [Header("Settings")]
     public float detectionRadius = 15f;
@@ -15,7 +14,7 @@ public class EnemyAI : MonoBehaviour
     public float attackCooldown = 2f;
     public float patrolIdleTime = 3f;
     public float rotationSpeed = 7f;
-    public float attackDuration = 1.0f; // Duration of attack animation 
+    public float attackDuration = 1.0f; // Thời gian diễn ra animation đánh
 
     private NavMeshAgent agent;
     private float cooldownTimer;
@@ -33,8 +32,14 @@ public class EnemyAI : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        if (animator == null) animator = GetComponent<Animator>();
-        if (healthVu == null && player != null) healthVu = player.GetComponent<HealthVu>();
+        if (animator == null) animator = GetComponentInChildren<Animator>();
+
+        // Tự động tìm Player nếu chưa gán
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null) player = playerObj.transform;
+        }
 
         SetNewPatrolPoint();
         currentState = State.Patrol;
@@ -42,39 +47,37 @@ public class EnemyAI : MonoBehaviour
 
     void Update()
     {
-        cooldownTimer -= Time.deltaTime;
+        if (player == null) return;
 
+        cooldownTimer -= Time.deltaTime;
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // Cancel attack if player leaves attack range
-        if (isAttacking && distanceToPlayer > attackRange)
-        {
-            CancelAttack();
-            currentState = State.Chase;
-        }
-
-        // Handle attack duration manually (no animation event needed)
+        // Xử lý thời gian chờ sau khi đánh
         if (isAttacking)
         {
             attackTimer -= Time.deltaTime;
             if (attackTimer <= 0f)
             {
-                EndAttack();
+                isAttacking = false;
             }
+            return; // Khi đang đánh thì không thực hiện các logic di chuyển bên dưới
         }
 
-        // State switching
-        if (!isAttacking)
+        // Logic chuyển đổi trạng thái
+        if (distanceToPlayer <= attackRange && cooldownTimer <= 0f)
         {
-            if (distanceToPlayer <= attackRange && cooldownTimer <= 0f)
-                currentState = State.Attack;
-            else if (distanceToPlayer <= detectionRadius)
-                currentState = State.Chase;
-            else
-                currentState = State.Patrol;
+            currentState = State.Attack;
+        }
+        else if (distanceToPlayer <= detectionRadius)
+        {
+            currentState = State.Chase;
+        }
+        else
+        {
+            currentState = State.Patrol;
         }
 
-        // Execute state
+        // Thực thi trạng thái
         switch (currentState)
         {
             case State.Patrol: Patrol(); break;
@@ -82,7 +85,8 @@ public class EnemyAI : MonoBehaviour
             case State.Attack: Attack(); break;
         }
 
-        animator.SetBool("isWalking", agent.velocity.magnitude > 0.1f && !isAttacking);
+        // Đồng bộ animation chạy/đi bộ
+        animator.SetBool("isWalking", agent.velocity.magnitude > 0.1f);
 
         if (!isAttacking)
             RotateTowardsMovementDirection();
@@ -101,7 +105,7 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        if (!isPatrolling || Vector3.Distance(transform.position, patrolPoint) < 1.5f)
+        if (!isPatrolling || agent.remainingDistance < 0.5f)
         {
             isIdle = true;
             isPatrolling = false;
@@ -112,8 +116,7 @@ public class EnemyAI : MonoBehaviour
     void SetNewPatrolPoint()
     {
         Vector3 randomDirection = Random.insideUnitSphere * patrolRadius + transform.position;
-
-        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, patrolRadius, NavMesh.AllAreas))
+        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, patrolRadius, 1))
         {
             patrolPoint = hit.position;
             agent.SetDestination(patrolPoint);
@@ -126,70 +129,24 @@ public class EnemyAI : MonoBehaviour
     {
         isIdle = false;
         isPatrolling = false;
-
-        if (agent.isOnNavMesh && player != null)
+        if (agent.isOnNavMesh)
             agent.SetDestination(player.position);
     }
 
     void Attack()
     {
-        if (isAttacking) return;
-
-        float distance = Vector3.Distance(transform.position, player.position);
-        if (distance > attackRange)
-        {
-            currentState = State.Chase;
-            return;
-        }
-
         isAttacking = true;
         cooldownTimer = attackCooldown;
         attackTimer = attackDuration;
-        agent.ResetPath();
 
-        // Quay mặt về phía player
+        agent.ResetPath(); // Dừng di chuyển khi đánh
+
+        // Quay mặt về phía Player
         Vector3 lookPos = new Vector3(player.position.x, transform.position.y, player.position.z);
-        transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookPos - transform.position), Time.deltaTime * rotationSpeed);
+        transform.LookAt(lookPos);
 
-        animator.ResetTrigger("AttackVu");
+        // Kích hoạt animation đánh
         animator.SetTrigger("AttackVu");
-
-        // Gọi damage ngay lập tức (hoặc delay bằng coroutine)
-        DealDamage();
-    }
-
-    public void DealDamage()
-    {
-        if (Vector3.Distance(transform.position, player.position) <= attackRange)
-        {
-            healthVu.TakeDamage(10); // Damage amount
-        }
-    }
-
-    public void EndAttack()
-    {
-        isAttacking = false;
-        attackTimer = 0f;
-    }
-
-    public void CancelAttack()
-    {
-        if (!isAttacking) return;
-
-        isAttacking = false;
-        attackTimer = 0f;
-        cooldownTimer = attackCooldown;
-
-        animator.ResetTrigger("AttackVu");
-
-        // Instantly cut the attack animation
-        if (animator.HasState(0, Animator.StringToHash("Walk")))
-            animator.CrossFade("Walk", 0.1f);
-        else if (animator.HasState(0, Animator.StringToHash("Walk")))
-            animator.CrossFade("Walk", 0.1f);
-
-        if (agent.isOnNavMesh && player != null)
-            agent.SetDestination(player.position);
     }
 
     void RotateTowardsMovementDirection()
