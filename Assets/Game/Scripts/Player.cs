@@ -3,7 +3,7 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     [Header("Player Health")]
-    public PlayerStat playerStat;
+   
 
     public int currentHealth;
 
@@ -11,8 +11,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
-        currentHealth = playerStat.health;
-        healthBar.SetMaxHealth(playerStat.health);
+       
     }
 
     private void Update()
