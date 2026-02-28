@@ -11,26 +11,19 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
 
         if (enemyHealth == null)
         {
-            Debug.LogError($"[EnemyHealthAdapter] ERROR: EnemyHealth component NOT FOUND on {gameObject.name}!");
+            Debug.LogError($"[EnemyHealthAdapter] EnemyHealth component NOT FOUND on {gameObject.name}!");
         }
         else
         {
-            Debug.Log($"[EnemyHealthAdapter] ✅ Initialized on {gameObject.name}");
-            Debug.Log($"  - Max HP: {enemyHealth.MaxHealth}");
-            Debug.Log($"  - Current HP: {enemyHealth.currentHp}");
+            Debug.Log($"[EnemyHealthAdapter] Initialized on {gameObject.name}");
         }
     }
 
-    void Start()
-    {
-        Debug.Log($"[EnemyHealthAdapter] START - {gameObject.name} ready!");
-        Debug.Log($"  - GameObject: {gameObject.name}");
-        Debug.Log($"  - Tag: {gameObject.tag}");
-        Debug.Log($"  - Layer: {gameObject.layer}");
-        Debug.Log($"  - Active: {gameObject.activeInHierarchy}");
-    }
+    // ============================================
+    // FLOAT DAMAGE (NEW)
+    // ============================================
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (enemyHealth == null)
         {
@@ -38,12 +31,12 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
             return;
         }
 
-        Debug.Log($"[EnemyHealthAdapter] {gameObject.name} taking {damage} damage!");
-        Debug.Log($"  - HP before: {enemyHealth.currentHp}/{enemyHealth.MaxHealth}");
+        // Convert float to int for legacy EnemyHealth
+        int intDamage = Mathf.RoundToInt(damage);
 
-        enemyHealth.TakeDamage(damage);
+        Debug.Log($"[EnemyHealthAdapter] {gameObject.name} taking {damage:F1} damage (rounded to {intDamage})");
 
-        Debug.Log($"  - HP after: {enemyHealth.currentHp}/{enemyHealth.MaxHealth}");
+        enemyHealth.TakeDamage(intDamage);
 
         if (IsDead())
         {
@@ -51,14 +44,14 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
         }
     }
 
-    public int GetCurrentHP()
+    public float GetCurrentHP()
     {
-        return enemyHealth != null ? enemyHealth.currentHp : 0;
+        return enemyHealth != null ? enemyHealth.currentHp : 0f;
     }
 
-    public int GetMaxHP()
+    public float GetMaxHP()
     {
-        return enemyHealth != null ? enemyHealth.MaxHealth : 0;
+        return enemyHealth != null ? enemyHealth.MaxHealth : 0f;
     }
 
     public bool IsDead()

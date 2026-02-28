@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 /// <summary>
 /// Interface for all enemy types in the game
@@ -7,12 +7,12 @@ using UnityEngine;
 public interface IEnemy
 {
     // Combat methods
-    void TakeDamage(int damage);
+    void TakeDamage(float damage); // ← CHANGED: int → float
     void Die();
 
     // Health status
-    int GetCurrentHP();
-    int GetMaxHP();
+    float GetCurrentHP(); // ← CHANGED: int → float
+    float GetMaxHP(); // ← CHANGED: int → float
     bool IsDead();
 
     // Transform access

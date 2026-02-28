@@ -1,15 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-/// <summary>
-/// Adapter for Kien's enemies (use Animator State Machine)
-/// Creates new health system compatible with IEnemy
-/// </summary>
 public class EnemyKienAdapter : MonoBehaviour, IEnemy
 {
     [Header("Health Settings")]
-    [SerializeField] private int maxHealth = 80;
-    private int currentHealth;
+    [SerializeField] private float maxHealth = 80f; // ← CHANGED: int → float
+    private float currentHealth; // ← CHANGED: int → float
     private bool isDead = false;
 
     [Header("References")]
@@ -20,21 +16,20 @@ public class EnemyKienAdapter : MonoBehaviour, IEnemy
     {
         currentHealth = maxHealth;
 
-        // Get references
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
 
         Debug.Log($"[EnemyKienAdapter] Initialized on {gameObject.name} with {maxHealth} HP");
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (isDead) return;
 
         currentHealth -= damage;
-        currentHealth = Mathf.Max(0, currentHealth); // Prevent negative HP
+        currentHealth = Mathf.Max(0, currentHealth);
 
-        Debug.Log($"[EnemyKienAdapter] {gameObject.name} took {damage} damage. HP: {currentHealth}/{maxHealth}");
+        Debug.Log($"[EnemyKienAdapter] {gameObject.name} took {damage:F1} damage. HP: {currentHealth:F1}/{maxHealth:F1}");
 
         if (currentHealth <= 0)
         {
@@ -42,12 +37,12 @@ public class EnemyKienAdapter : MonoBehaviour, IEnemy
         }
     }
 
-    public int GetCurrentHP()
+    public float GetCurrentHP()
     {
         return currentHealth;
     }
 
-    public int GetMaxHP()
+    public float GetMaxHP()
     {
         return maxHealth;
     }
@@ -69,13 +64,11 @@ public class EnemyKienAdapter : MonoBehaviour, IEnemy
         isDead = true;
         Debug.Log($"[EnemyKienAdapter] {gameObject.name} died!");
 
-        // Notify quest manager
         if (QuestManager.Instance != null)
         {
             QuestManager.Instance.OnEnemyKilled();
         }
 
-        // Stop animator and agent
         if (animator != null)
         {
             animator.enabled = false;
@@ -86,7 +79,6 @@ public class EnemyKienAdapter : MonoBehaviour, IEnemy
             agent.enabled = false;
         }
 
-        // Destroy after delay
         Destroy(gameObject, 2f);
     }
 }

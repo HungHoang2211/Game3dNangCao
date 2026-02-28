@@ -4,7 +4,6 @@ public class FireBall : MonoBehaviour
 {
     [Header("Projectile Settings")]
     public float speed = 10f;
-    public int damage = 50;
     public float lifeTime = 5f;
 
     [Header("VFX")]
@@ -13,7 +12,6 @@ public class FireBall : MonoBehaviour
     void Start()
     {
         Destroy(gameObject, lifeTime);
-        Debug.Log("[FireBall] Created");
     }
 
     void Update()
@@ -23,49 +21,45 @@ public class FireBall : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log($"[FireBall] Hit something: {other.gameObject.name}, Tag: {other.tag}, Layer: {other.gameObject.layer}");
-
-        // Try to get IEnemy interface
         IEnemy enemy = other.GetComponent<IEnemy>();
 
-        if (enemy != null)
+        if (enemy != null && !enemy.IsDead())
         {
-            Debug.Log($"[FireBall] Found IEnemy on {other.name}!");
+            // Get damage from PlayerStats
+            float damage = GetPlayerDamage();
 
-            if (!enemy.IsDead())
-            {
-                Debug.Log($"[FireBall] Dealing {damage} damage to {other.name}");
-                enemy.TakeDamage(damage);
+            Debug.Log($"[FireBall] Hit {other.name} for {damage:F1} damage!");
 
-                // Spawn hit effect
-                SpawnHitEffect();
+            enemy.TakeDamage(damage);
 
-                // Destroy fireball
-                Destroy(gameObject);
-                return;
-            }
-            else
-            {
-                Debug.Log($"[FireBall] {other.name} is already dead, skipping");
-            }
+            SpawnHitEffect();
+            Destroy(gameObject);
+            return;
+        }
+
+        if (other.CompareTag("Enemy"))
+        {
+            Debug.LogWarning($"[FireBall] Hit enemy {other.name} but no IEnemy adapter found!");
+        }
+    }
+
+    /// <summary>
+    /// Get damage from PlayerStats (with crit calculation)
+    /// </summary>
+    private float GetPlayerDamage()
+    {
+        // Find player in scene
+        PlayerStats playerStats = FindObjectOfType<PlayerStats>();
+
+        if (playerStats != null)
+        {
+            // Use PlayerStats.CalculateDamage() for crit rolls
+            return playerStats.CalculateDamage();
         }
         else
         {
-            Debug.LogWarning($"[FireBall] Hit {other.name} but NO IEnemy found!");
-
-            // Debug: List all components
-            Component[] components = other.GetComponents<Component>();
-            Debug.Log($"[FireBall] Components on {other.name}:");
-            foreach (Component comp in components)
-            {
-                Debug.Log($"  - {comp.GetType().Name}");
-            }
-        }
-
-        // Warning if enemy tag but no interface
-        if (other.CompareTag("Enemy"))
-        {
-            Debug.LogError($"[FireBall] CRITICAL: {other.name} has 'Enemy' tag but NO IEnemy adapter!");
+            Debug.LogWarning("[FireBall] PlayerStats not found! Using default damage.");
+            return 50f; // Fallback damage
         }
     }
 

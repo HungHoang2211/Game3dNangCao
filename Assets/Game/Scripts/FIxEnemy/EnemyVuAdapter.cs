@@ -1,15 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.AI;
 
-/// <summary>
-/// Adapter for Vu's enemies (don't have EnemyHealth component)
-/// Creates new health system compatible with IEnemy
-/// </summary>
 public class EnemyVuAdapter : MonoBehaviour, IEnemy
 {
     [Header("Health Settings")]
-    [SerializeField] private int maxHealth = 100;
-    private int currentHealth;
+    [SerializeField] private float maxHealth = 100f; // ← CHANGED: int → float
+    private float currentHealth; // ← CHANGED: int → float
     private bool isDead = false;
 
     [Header("References")]
@@ -21,7 +17,6 @@ public class EnemyVuAdapter : MonoBehaviour, IEnemy
     {
         currentHealth = maxHealth;
 
-        // Get references
         enemyAI = GetComponent<EnemyAI>();
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
@@ -29,14 +24,14 @@ public class EnemyVuAdapter : MonoBehaviour, IEnemy
         Debug.Log($"[EnemyVuAdapter] Initialized on {gameObject.name} with {maxHealth} HP");
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         if (isDead) return;
 
         currentHealth -= damage;
-        currentHealth = Mathf.Max(0, currentHealth); // Prevent negative HP
+        currentHealth = Mathf.Max(0, currentHealth);
 
-        Debug.Log($"[EnemyVuAdapter] {gameObject.name} took {damage} damage. HP: {currentHealth}/{maxHealth}");
+        Debug.Log($"[EnemyVuAdapter] {gameObject.name} took {damage:F1} damage. HP: {currentHealth:F1}/{maxHealth:F1}");
 
         if (currentHealth <= 0)
         {
@@ -44,12 +39,12 @@ public class EnemyVuAdapter : MonoBehaviour, IEnemy
         }
     }
 
-    public int GetCurrentHP()
+    public float GetCurrentHP()
     {
         return currentHealth;
     }
 
-    public int GetMaxHP()
+    public float GetMaxHP()
     {
         return maxHealth;
     }
@@ -71,18 +66,15 @@ public class EnemyVuAdapter : MonoBehaviour, IEnemy
         isDead = true;
         Debug.Log($"[EnemyVuAdapter] {gameObject.name} died!");
 
-        // Notify quest manager
         if (QuestManager.Instance != null)
         {
             QuestManager.Instance.OnEnemyKilled();
         }
 
-        // Disable AI components
         if (enemyAI != null) enemyAI.enabled = false;
         if (agent != null) agent.enabled = false;
         if (animator != null) animator.enabled = false;
 
-        // Destroy after delay
         Destroy(gameObject, 2f);
     }
 }

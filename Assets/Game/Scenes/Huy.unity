@@ -7725,7 +7725,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackRange: 3
-  attackDamage: 20
   attackSpeed: 1
   attackRangeCircle: {fileID: 44766799}
   spawnPoint: {fileID: 0}
@@ -7804,7 +7803,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c839e8f7aafbf84bbcbc68431c0d89e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentHealth: 100
   healthBar: {fileID: 234622632}
 --- !u!143 &232472565
 CharacterController:
@@ -44411,7 +44409,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!1 &697219122417884958
 GameObject:
   m_ObjectHideFlags: 0
@@ -46544,7 +46542,6 @@ MonoBehaviour:
     attackType: 0
   hiddenWeapon: {fileID: 7923842454579745000}
   pulledWeapon: {fileID: 36026311059744313}
-  meleeDamage: 1
 --- !u!144 &4524603656388246304
 CharacterJoint:
   m_ObjectHideFlags: 0
@@ -53766,6 +53763,8 @@ GameObject:
   - component: {fileID: 232472556}
   - component: {fileID: 232472563}
   - component: {fileID: 5102316048198465838}
+  - component: {fileID: 5102316048198465839}
+  - component: {fileID: 5102316048198465840}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -53788,6 +53787,44 @@ MonoBehaviour:
   fireBallPrefab: {fileID: 2972392977303283589, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
   firePoint: {fileID: 553830831}
   cooldown: 2
+--- !u!114 &5102316048198465839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102316048198465837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 55cecaecb5c06c645b469069992ccd5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  config: {fileID: 11400000, guid: 48f01387e78fb8a49ae380b9771a0027, type: 2}
+  currentLevel: 1
+  currentExp: 0
+  currentHP: 0
+  equipmentDamageBonus: 0
+  equipmentDefenseBonus: 0
+  equipmentSpeedBonus: 0
+  equipmentCritRateBonus: 0
+  equipmentCritDamageBonus: 0
+--- !u!114 &5102316048198465840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5102316048198465837}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: af21af8e32916a749b638f7eed181e7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerStats: {fileID: 0}
+  testWeaponDamage: 20
+  testArmorDefense: 10
+  testAccessorySpeed: 2
+  testAccessoryCritRate: 10
 --- !u!1 &5102316048199879278
 GameObject:
   m_ObjectHideFlags: 0
@@ -70212,6 +70249,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1302527268497033953, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
+      propertyPath: maxHealth
+      value: 800
+      objectReference: {fileID: 0}
     - target: {fileID: 2252318117386008816, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
       propertyPath: m_LocalPosition.x
       value: -5.48
@@ -70258,7 +70299,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3682466346997056394, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

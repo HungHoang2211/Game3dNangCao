@@ -1,14 +1,9 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// Player melee attack system using IEnemy interface
-/// Detects and damages all enemies in attack range
-/// </summary>
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack Settings")]
     public float attackRange = 3f;
-    public int attackDamage = 20;
     public float attackSpeed = 1f;
 
     [Header("Range Visual")]
@@ -19,15 +14,21 @@ public class PlayerAttack : MonoBehaviour
 
     private float nextAttackTime;
     private Animator animator;
+    private PlayerStats playerStats;
 
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
+        playerStats = GetComponent<PlayerStats>();
+
+        if (playerStats == null)
+        {
+            Debug.LogError("[PlayerAttack] PlayerStats component not found! Add it to Player GameObject.");
+        }
     }
 
     void Start()
     {
-        // Spawn player at spawn point if set
         if (spawnPoint != null)
         {
             transform.position = spawnPoint.position;
@@ -36,7 +37,6 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        // Handle attack input
         if (Input.GetKey(KeyCode.Space))
         {
             OnAttackHold();
@@ -52,7 +52,6 @@ public class PlayerAttack : MonoBehaviour
     {
         ShowRange(true);
 
-        // Check cooldown
         if (Time.time < nextAttackTime)
             return;
 
@@ -74,7 +73,10 @@ public class PlayerAttack : MonoBehaviour
             animator.SetTrigger("Attack");
         }
 
-        // Detect enemies in range using IEnemy interface
+        // Get damage from PlayerStats
+        float damage = GetPlayerDamage();
+
+        // Detect enemies in range
         Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
         int enemiesHit = 0;
 
@@ -84,13 +86,29 @@ public class PlayerAttack : MonoBehaviour
 
             if (enemy != null && !enemy.IsDead())
             {
-                Debug.Log($"[PlayerAttack] Hit {hit.name} for {attackDamage} damage!");
-                enemy.TakeDamage(attackDamage);
+                Debug.Log($"[PlayerAttack] Hit {hit.name} for {damage:F1} damage!");
+                enemy.TakeDamage(damage);
                 enemiesHit++;
             }
         }
 
         Debug.Log($"[PlayerAttack] Slash! Hit {enemiesHit} enemies");
+    }
+
+    /// <summary>
+    /// Get damage from PlayerStats (with crit calculation)
+    /// </summary>
+    private float GetPlayerDamage()
+    {
+        if (playerStats != null)
+        {
+            return playerStats.CalculateDamage();
+        }
+        else
+        {
+            Debug.LogWarning("[PlayerAttack] PlayerStats not found! Using default damage.");
+            return 20f; // Fallback damage
+        }
     }
 
     void ShowRange(bool show)
@@ -101,7 +119,6 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // Visualize attack range in editor
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
