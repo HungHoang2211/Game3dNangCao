@@ -8,7 +8,7 @@ public class AttackState_Hoang : EnemyState_Hoang
     private float attackMoveSpeed;
 
     private const float MAX_ATTACK_DISTANCE = 50f;
-
+ 
     public AttackState_Hoang(Enemy_Hoang enemyBase, EnemyStateMachine_Hoang stateMachine_Hoang, string animBoolName) : base(enemyBase, stateMachine_Hoang, animBoolName)
     {
         enemy = enemyBase as Enemy_MeleeH;

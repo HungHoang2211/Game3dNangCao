@@ -1,9 +1,5 @@
 using UnityEngine;
 
-/// <summary>
-/// Projectile that damages enemies using IEnemy interface
-/// Works with all enemy types through adapter pattern
-/// </summary>
 public class FireBall : MonoBehaviour
 {
     [Header("Projectile Settings")]
@@ -27,28 +23,49 @@ public class FireBall : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"[FireBall] Hit something: {other.gameObject.name}, Tag: {other.tag}, Layer: {other.gameObject.layer}");
+
         // Try to get IEnemy interface
         IEnemy enemy = other.GetComponent<IEnemy>();
 
-        if (enemy != null && !enemy.IsDead())
+        if (enemy != null)
         {
-            Debug.Log($"[FireBall] Hit {other.name} for {damage} damage!");
+            Debug.Log($"[FireBall] Found IEnemy on {other.name}!");
 
-            // Deal damage through interface
-            enemy.TakeDamage(damage);
+            if (!enemy.IsDead())
+            {
+                Debug.Log($"[FireBall] Dealing {damage} damage to {other.name}");
+                enemy.TakeDamage(damage);
 
-            // Spawn hit effect
-            SpawnHitEffect();
+                // Spawn hit effect
+                SpawnHitEffect();
 
-            // Destroy fireball
-            Destroy(gameObject);
-            return;
+                // Destroy fireball
+                Destroy(gameObject);
+                return;
+            }
+            else
+            {
+                Debug.Log($"[FireBall] {other.name} is already dead, skipping");
+            }
+        }
+        else
+        {
+            Debug.LogWarning($"[FireBall] Hit {other.name} but NO IEnemy found!");
+
+            // Debug: List all components
+            Component[] components = other.GetComponents<Component>();
+            Debug.Log($"[FireBall] Components on {other.name}:");
+            foreach (Component comp in components)
+            {
+                Debug.Log($"  - {comp.GetType().Name}");
+            }
         }
 
         // Warning if enemy tag but no interface
         if (other.CompareTag("Enemy"))
         {
-            Debug.LogWarning($"[FireBall] Hit enemy {other.name} but no IEnemy adapter found! Add EnemyHealthAdapter/EnemyVuAdapter/EnemyKienAdapter");
+            Debug.LogError($"[FireBall] CRITICAL: {other.name} has 'Enemy' tag but NO IEnemy adapter!");
         }
     }
 

@@ -49,6 +49,7 @@ public class Enemy_MeleeH : Enemy_Hoang
 
     [SerializeField] private Transform hiddenWeapon;
     [SerializeField] private Transform pulledWeapon;
+
     protected override void Awake()
     {
         base.Awake();
@@ -77,7 +78,8 @@ public class Enemy_MeleeH : Enemy_Hoang
         stateMachine_Hoang.currentState.Update();
 
         if (ShouldEnterBattleMode())
-            EnterBattleMode();
+            EnterBattleMode(); 
+            
     }
 
     public override void EnterBattleMode() { if (inBattleMode) return; base.EnterBattleMode(); stateMachine_Hoang.ChangeState_Hoang(recoveryState); }
@@ -114,7 +116,7 @@ public class Enemy_MeleeH : Enemy_Hoang
     }
 
 
-    public bool PlayerInAttackRange() => Vector3.Distance(transform.position, player.position) < attackData.attackRange;
+    public bool PlayerInAttackRange() => Vector3.Distance(transform.position, player.position) < attackData.attackRange; 
 
 
     public void ActivateDodgeRoll()
@@ -165,7 +167,7 @@ public class Enemy_MeleeH : Enemy_Hoang
         Debug.Log(clipName + "animation not found!");
         return 0;
     }
-
+    
     protected override void OnDrawGizmos()
     {
         base.OnDrawGizmos();
@@ -174,4 +176,6 @@ public class Enemy_MeleeH : Enemy_Hoang
         Gizmos.DrawWireSphere(transform.position, attackData.attackRange);
 
     }
+    
+
 }
