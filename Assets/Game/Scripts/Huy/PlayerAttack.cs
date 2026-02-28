@@ -1,28 +1,25 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Player melee attack system using IEnemy interface
+/// Detects and damages all enemies in attack range
+/// </summary>
 public class PlayerAttack : MonoBehaviour
 {
-    [Header("Weapon")]
+    [Header("Attack Settings")]
+    public float attackRange = 3f;
+    public int attackDamage = 20;
+    public float attackSpeed = 1f;
 
     [Header("Range Visual")]
     public GameObject attackRangeCircle;
 
-    [Header("Weapon Holder")]
-    public Transform weaponHolder;
-
-    public GameObject currentWeaponObject;
-
-    [Header("Player stat")]
-    
+    [Header("Spawn Point")]
+    public Transform spawnPoint;
 
     private float nextAttackTime;
+    private Animator animator;
 
-    Animator animator;
-
-
-
-    public Transform spawnPoint;
-    
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -30,17 +27,16 @@ public class PlayerAttack : MonoBehaviour
 
     void Start()
     {
-        transform.position = spawnPoint.position;
-
-       
-
-        //UpdateRangeVisual();
-
-       
+        // Spawn player at spawn point if set
+        if (spawnPoint != null)
+        {
+            transform.position = spawnPoint.position;
+        }
     }
 
     void Update()
     {
+        // Handle attack input
         if (Input.GetKey(KeyCode.Space))
         {
             OnAttackHold();
@@ -52,17 +48,15 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-
     public void OnAttackHold()
     {
-       
         ShowRange(true);
 
+        // Check cooldown
         if (Time.time < nextAttackTime)
             return;
 
-        //nextAttackTime = Time.time + 1f / currentWeapon.attackSpeed;
-
+        nextAttackTime = Time.time + 1f / attackSpeed;
         DoAttack();
     }
 
@@ -73,45 +67,44 @@ public class PlayerAttack : MonoBehaviour
 
     void DoAttack()
     {
-       
+        // Trigger animation
         if (animator != null)
         {
             animator.ResetTrigger("Attack");
             animator.SetTrigger("Attack");
         }
-        //Collider[] hits = Physics.OverlapSphere(transform.position, currentWeapon.attackRange);
 
-        //foreach (Collider hit in hits)
-        //{
-        //    EnemyHealth enemy = hit.GetComponentInParent<EnemyHealth>();
-        //    if (enemy != null)
-        //    {
-        //        enemy.TakeDamage(currentWeapon.damage + (playerDamage.damage / 2));
-        //    }
-        //}
-        Debug.Log("Slash");
+        // Detect enemies in range using IEnemy interface
+        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+        int enemiesHit = 0;
+
+        foreach (Collider hit in hits)
+        {
+            IEnemy enemy = hit.GetComponent<IEnemy>();
+
+            if (enemy != null && !enemy.IsDead())
+            {
+                Debug.Log($"[PlayerAttack] Hit {hit.name} for {attackDamage} damage!");
+                enemy.TakeDamage(attackDamage);
+                enemiesHit++;
+            }
+        }
+
+        Debug.Log($"[PlayerAttack] Slash! Hit {enemiesHit} enemies");
     }
+
     void ShowRange(bool show)
     {
         if (attackRangeCircle != null)
         {
             attackRangeCircle.SetActive(show);
         }
-
     }
 
-   
-
-
-    //void UpdateRangeVisual()
-    //{
-    //    if (attackRangeCircle != null && currentWeapon != null)
-    //    {
-    //        float diameter = currentWeapon.attackRange * 2f;
-    //        attackRangeCircle.transform.localScale =
-    //            new Vector3(diameter, 0.05f, diameter);
-    //    }
-    //}
-
-   
+    // Visualize attack range in editor
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, attackRange);
+    }
 }

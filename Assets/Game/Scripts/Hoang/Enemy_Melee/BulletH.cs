@@ -1,5 +1,4 @@
-using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BulletH : MonoBehaviour
 {
@@ -10,9 +9,7 @@ public class BulletH : MonoBehaviour
     private MeshRenderer meshRenderer;
     private TrailRenderer trailRenderer;
 
-
     [SerializeField] private GameObject bulletImpactFX;
-
 
     private Vector3 startPosition;
     private float flyDistance;
@@ -36,7 +33,7 @@ public class BulletH : MonoBehaviour
 
         trailRenderer.time = .25f;
         startPosition = transform.position;
-        this.flyDistance = flyDistance + .5f; // magic number .5f is a length of tip of the laser ( Check method UpdateAimVisuals() on PlayerAim script) ;
+        this.flyDistance = flyDistance + .5f;
     }
 
     private void Update()
@@ -51,6 +48,7 @@ public class BulletH : MonoBehaviour
         if (trailRenderer.time < 0)
             ReturnBulletToPool();
     }
+
     private void DisableBulletIfNeeded()
     {
         if (Vector3.Distance(startPosition, transform.position) > flyDistance && !bulletDisabled)
@@ -60,10 +58,11 @@ public class BulletH : MonoBehaviour
             bulletDisabled = true;
         }
     }
+
     private void FadeTrailIfNeeded()
     {
         if (Vector3.Distance(startPosition, transform.position) > flyDistance - 1.5f)
-            trailRenderer.time -= 2 * Time.deltaTime; // magic number 2 is choosen trhou testing
+            trailRenderer.time -= 2 * Time.deltaTime;
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -71,28 +70,35 @@ public class BulletH : MonoBehaviour
         CreateImpactFx(collision);
         ReturnBulletToPool();
 
-        Enemy_Hoang enemy = collision.gameObject.GetComponentInParent<Enemy_Hoang>();
+        // Check for shield first (Hoang's enemy specific)
         Shield_Hoang shield = collision.gameObject.GetComponent<Shield_Hoang>();
-
         if (shield != null)
         {
             shield.ReduceDurability();
             return;
         }
 
-        if (enemy != null)
+        // Use IEnemy interface for damage
+        IEnemy enemy = collision.gameObject.GetComponent<IEnemy>();
+        if (enemy != null && !enemy.IsDead())
         {
-            Vector3 force = rb.linearVelocity.normalized * impactForce;
-            Rigidbody hitRigidbody = collision.collider.attachedRigidbody;
+            Debug.Log($"[BulletH] Hit {collision.gameObject.name}");
+            enemy.TakeDamage(10); // Bullet damage
 
-            enemy.GetHit();
-            enemy.DeathImpact(force, collision.contacts[0].point, hitRigidbody);
+            // If it's Hoang's enemy, apply physics impact
+            Enemy_Hoang enemyHoang = collision.gameObject.GetComponent<Enemy_Hoang>();
+            if (enemyHoang != null)
+            {
+                Vector3 force = rb.linearVelocity.normalized * impactForce;
+                Rigidbody hitRigidbody = collision.collider.attachedRigidbody;
+
+                enemyHoang.GetHit(); // Trigger battle mode
+                enemyHoang.DeathImpact(force, collision.contacts[0].point, hitRigidbody);
+            }
         }
     }
 
-
     private void ReturnBulletToPool() => ObjectPoolH.instance.ReturnObject(gameObject);
-
 
     private void CreateImpactFx(Collision collision)
     {
@@ -107,4 +113,3 @@ public class BulletH : MonoBehaviour
         }
     }
 }
-

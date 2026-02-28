@@ -37,20 +37,25 @@ public class EnemyAxe_H : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        // trúng đạn
+        // Hit by bullet
         if (other.GetComponent<BulletH>() != null)
         {
             Impact();
             return;
         }
 
-        // trúng player bằng TAG (KHÔNG cần Player script)
+        // Hit player using tag (no need for Player script)
         if (other.CompareTag("Player"))
         {
             Impact();
 
-            // OPTIONAL: nếu player có script nhận damage thì tự gọi
-            other.SendMessage("TakeDamage", SendMessageOptions.DontRequireReceiver);
+            // Try to damage player if they have health component
+            Player player = other.GetComponent<Player>();
+            if (player != null)
+            {
+                player.TakeDamage(15); // Axe damage
+                Debug.Log("[EnemyAxe_H] Hit player for 15 damage");
+            }
         }
     }
 
