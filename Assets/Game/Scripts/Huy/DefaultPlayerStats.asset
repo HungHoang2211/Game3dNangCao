@@ -18,7 +18,7 @@ MonoBehaviour:
   baseSpeed: 5
   baseCritRate: 5
   baseCritDamage: 150
-  startingLevel: 1
+  startingLevel: 0
   maxLevel: 50
   baseExpPerLevel: 100
   expCurveExponent: 1.5
