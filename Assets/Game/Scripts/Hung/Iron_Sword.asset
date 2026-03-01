@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f3986201390d404490d7711ab6ac3b6, type: 3}
+  m_Name: Iron_Sword
+  m_EditorClassIdentifier: 
+  id: 1
+  itemName: Iron Sword
+  icon: {fileID: 21300000, guid: 009d4fc67f3ecc341a5229c548eea9a0, type: 3}
+  description: Weaked Sword
+  itemType: 0
+  isStackable: 0
+  maxStackSize: 99
+  buyPrice: 100
+  sellPrice: 50
+  damageBonus: 20
+  defenseBonus: 0
+  speedBonus: 0
+  critRateBonus: 0
+  upgradeLevel: 0
+  maxUpgradeLevel: 10
+  upgradeCostPerLevel: 100
+  upgradeColors:
+  - {r: 1, g: 1, b: 1, a: 1}
+  - {r: 0, g: 1, b: 0, a: 1}
+  - {r: 0, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0, b: 1, a: 1}
+  - {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  - {r: 1, g: 0.5, b: 0, a: 1}
+  hpRestore: 0
+  usableInCombat: 1
