@@ -49,7 +49,7 @@ public class FireBall : MonoBehaviour
     private float GetPlayerDamage()
     {
         // Find player in scene
-        PlayerStats playerStats = FindObjectOfType<PlayerStats>();
+        PlayerStats playerStats = FindAnyObjectByType<PlayerStats>();
 
         if (playerStats != null)
         {
