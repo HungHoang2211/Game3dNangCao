@@ -34,6 +34,10 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private GameObject tooltipPanel;
     [SerializeField] private TextMeshProUGUI tooltipText;
 
+    [Header("Other Canvases to Hide")]
+    [Tooltip("Canvas(es) to hide when inventory is open (e.g., HUD Canvas)")]
+    [SerializeField] private GameObject[] canvasesToHide;
+
     private List<InventorySlotUI> slotUIList = new List<InventorySlotUI>();
     private bool isInventoryOpen = false;
 
@@ -85,12 +89,6 @@ public class InventoryUI : MonoBehaviour
 
         // Start with inventory closed
         CloseInventory();
-
-        // Equipment panel always visible
-        if (equipmentPanel != null)
-        {
-            equipmentPanel.SetActive(false);
-        }
     }
 
     private void OnDestroy()
@@ -321,23 +319,88 @@ public class InventoryUI : MonoBehaviour
 
     public void OpenInventory()
     {
+        Debug.Log("[InventoryUI] Opening inventory");
+
+        // Show inventory and equipment panels
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(true);
-            isInventoryOpen = true;
-            RefreshInventoryUI();
         }
+
+        if (equipmentPanel != null)
+        {
+            equipmentPanel.SetActive(true);
+        }
+
+        isInventoryOpen = true;
+
+        // Hide other canvases (e.g., HUD)
+        HideOtherCanvases();
+
+        // Refresh UI
+        RefreshInventoryUI();
+
+        // Optional: Pause game
+        // Time.timeScale = 0f;
     }
 
     public void CloseInventory()
     {
+        Debug.Log("[InventoryUI] Closing inventory");
+
+        // Hide inventory and equipment panels
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(false);
-            isInventoryOpen = false;
         }
 
+        if (equipmentPanel != null)
+        {
+            equipmentPanel.SetActive(false);
+        }
+
+        isInventoryOpen = false;
+
+        // Show other canvases again
+        ShowOtherCanvases();
+
+        // Hide tooltip
         HideTooltip();
+
+        // Optional: Resume game
+        // Time.timeScale = 1f;
+    }
+
+    // ============================================
+    // CANVAS VISIBILITY MANAGEMENT
+    // ============================================
+
+    private void HideOtherCanvases()
+    {
+        if (canvasesToHide == null || canvasesToHide.Length == 0) return;
+
+        foreach (GameObject canvas in canvasesToHide)
+        {
+            if (canvas != null)
+            {
+                canvas.SetActive(false);
+                Debug.Log($"[InventoryUI] Hiding canvas: {canvas.name}");
+            }
+        }
+    }
+
+    private void ShowOtherCanvases()
+    {
+        if (canvasesToHide == null || canvasesToHide.Length == 0) return;
+
+        foreach (GameObject canvas in canvasesToHide)
+        {
+            if (canvas != null)
+            {
+                canvas.SetActive(true);
+                Debug.Log($"[InventoryUI] Showing canvas: {canvas.name}");
+            }
+        }
     }
 
     // ============================================

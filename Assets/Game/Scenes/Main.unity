@@ -26940,7 +26940,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c839e8f7aafbf84bbcbc68431c0d89e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  healthBar: {fileID: 0}
+  healthBar: {fileID: 234622632}
 --- !u!143 &232472565
 CharacterController:
   m_ObjectHideFlags: 0
@@ -41798,6 +41798,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1539913574}
     m_Modifications:
+    - target: {fileID: 425587877554158203, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a65f98cfb20147e469f5a30a99ab0221, type: 3}
     - target: {fileID: 3959396421941532931, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -102010,6 +102014,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1539913574}
     m_Modifications:
+    - target: {fileID: 425587877554158203, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a65f98cfb20147e469f5a30a99ab0221, type: 3}
+    - target: {fileID: 1799650123369785480, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: m_text
+      value: ARMOR
+      objectReference: {fileID: 0}
     - target: {fileID: 3959396421941532931, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -169859,8 +169871,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd931b936d618344fa609b8f324e5c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 0}
-  equipment: {fileID: 0}
+  inventory: {fileID: 5102316048198465842}
+  equipment: {fileID: 5102316048198465841}
   inventoryPanel: {fileID: 1785582203}
   equipmentPanel: {fileID: 1539913573}
   gridContainer: {fileID: 243270011}
@@ -169872,6 +169884,8 @@ MonoBehaviour:
   closeButton: {fileID: 308195961}
   tooltipPanel: {fileID: 1050481813}
   tooltipText: {fileID: 9473530}
+  canvasesToHide:
+  - {fileID: 89698956}
 --- !u!114 &1682389992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -186535,6 +186549,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1539913574}
     m_Modifications:
+    - target: {fileID: 425587877554158203, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: a65f98cfb20147e469f5a30a99ab0221, type: 3}
+    - target: {fileID: 1799650123369785480, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: m_text
+      value: ACCESSORY
+      objectReference: {fileID: 0}
     - target: {fileID: 3959396421941532931, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -186622,6 +186644,10 @@ PrefabInstance:
     - target: {fileID: 6921412163985913957, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
       propertyPath: slotType
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8847688885336130635, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 110
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -226690,7 +226716,7 @@ MonoBehaviour:
   equipmentSpeedBonus: 0
   equipmentCritRateBonus: 0
   equipmentCritDamageBonus: 0
-  experienceManager: {fileID: 0}
+  experienceManager: {fileID: 1750455450}
 --- !u!114 &5102316048198465840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -226720,8 +226746,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 043299c49b948804c87af727c76e445a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerStats: {fileID: 0}
-  inventory: {fileID: 0}
+  playerStats: {fileID: 5102316048198465839}
+  inventory: {fileID: 5102316048198465842}
   equippedWeapon: {fileID: 0}
   equippedArmor: {fileID: 0}
   equippedAccessory: {fileID: 0}
