@@ -117,6 +117,13 @@ public class InventoryUI : MonoBehaviour
             return;
         }
 
+        // CRITICAL FIX: Don't create slots if already created
+        if (slotUIList.Count > 0)
+        {
+            Debug.LogWarning("[InventoryUI] Slots already created. Skipping...");
+            return;
+        }
+
         int inventorySize = inventory.GetInventorySize();
 
         for (int i = 0; i < inventorySize; i++)

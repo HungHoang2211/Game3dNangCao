@@ -41886,6 +41886,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: EquipmentSlot_Weapon
       objectReference: {fileID: 0}
+    - target: {fileID: 6921412163985913957, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: emptyColor.a
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -102109,6 +102113,10 @@ PrefabInstance:
     - target: {fileID: 6921412163985913957, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
       propertyPath: slotType
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6921412163985913957, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: emptyColor.a
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -186644,6 +186652,10 @@ PrefabInstance:
     - target: {fileID: 6921412163985913957, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
       propertyPath: slotType
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6921412163985913957, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
+      propertyPath: emptyColor.a
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8847688885336130635, guid: 6ef7c20fa5d072947adf655d72561a60, type: 3}
       propertyPath: m_SizeDelta.x
