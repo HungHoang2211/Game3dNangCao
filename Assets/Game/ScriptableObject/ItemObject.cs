@@ -80,6 +80,10 @@ public class ItemObject : ScriptableObject
     [Tooltip("Can be used in combat?")]
     public bool usableInCombat = true;
 
+    [Header("3D Model (for Equipment)")]
+    [Tooltip("Prefab 3D sẽ hiển thị khi trang bị")]
+    public GameObject equipPrefab;
+
     // ============================================
     // HELPER METHODS
     // ============================================

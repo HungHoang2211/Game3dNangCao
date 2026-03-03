@@ -13,18 +13,18 @@ MonoBehaviour:
   m_Name: Katana
   m_EditorClassIdentifier: 
   id: 5
-  itemName: Katana
-  icon: {fileID: 21300000, guid: b6b1efe45ad8faa40b6671917598e7a6, type: 3}
-  description: Katana
+  itemName: Katana normar
+  icon: {fileID: 21300000, guid: e6494be27789f254cad2d36b09178f59, type: 3}
+  description: 
   itemType: 0
   isStackable: 0
   maxStackSize: 99
-  buyPrice: 150
-  sellPrice: 75
-  damageBonus: 100
+  buyPrice: 100
+  sellPrice: 50
+  damageBonus: 10
   defenseBonus: 0
   speedBonus: 0
-  critRateBonus: 20
+  critRateBonus: 50
   upgradeLevel: 0
   maxUpgradeLevel: 10
   upgradeCostPerLevel: 100
@@ -37,4 +37,4 @@ MonoBehaviour:
   - {r: 1, g: 0.5, b: 0, a: 1}
   hpRestore: 0
   usableInCombat: 1
-  equipPrefab: {fileID: 0}
+  equipPrefab: {fileID: 5327970186819985746, guid: 0342fe68c879cfb418a1abc857737753, type: 3}
