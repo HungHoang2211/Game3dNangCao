@@ -48,10 +48,10 @@ public class ExperienceManager : MonoBehaviour
         UpdateInterface();
 
         // DEBUG: Click to add EXP
-        if (Input.GetMouseButtonDown(0))
-        {
-            AddExperience(5);
-        }
+        //if (Input.GetMouseButtonDown(0))
+        //{
+        //    AddExperience(5);
+        //}
     }
 
     public void AddExperience(int amount)
