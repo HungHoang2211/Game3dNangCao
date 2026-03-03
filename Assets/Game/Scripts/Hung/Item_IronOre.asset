@@ -19,7 +19,7 @@ MonoBehaviour:
   itemType: 4
   isStackable: 1
   maxStackSize: 99
-  buyPrice: 0
+  buyPrice: 20
   sellPrice: 5
   damageBonus: 0
   defenseBonus: 0

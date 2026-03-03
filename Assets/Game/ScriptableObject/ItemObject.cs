@@ -172,4 +172,70 @@ public class ItemObject : ScriptableObject
 
         return tooltip;
     }
+
+    /// <summary>
+    /// Get actual damage with upgrade bonus (10% per level)
+    /// </summary>
+    /// <summary>
+    /// Get actual damage with upgrade bonus (10% per level)
+    /// </summary>
+    public float GetUpgradedDamage()
+    {
+        return damageBonus * (1f + (upgradeLevel * 0.1f));
+    }
+
+    /// <summary>
+    /// Get actual defense with upgrade bonus (10% per level)
+    /// </summary>
+    public float GetUpgradedDefense()
+    {
+        return defenseBonus * (1f + (upgradeLevel * 0.1f));
+    }
+
+    /// <summary>
+    /// Get actual speed with upgrade bonus (10% per level)
+    /// </summary>
+    public float GetUpgradedSpeed()
+    {
+        return speedBonus * (1f + (upgradeLevel * 0.1f));
+    }
+
+    /// <summary>
+    /// Get actual crit rate with upgrade bonus (10% per level)
+    /// </summary>
+    public float GetUpgradedCritRate()
+    {
+        return critRateBonus * (1f + (upgradeLevel * 0.1f));
+    }
+
+    /// <summary>
+    /// Upgrade item to next level
+    /// </summary>
+    public void Upgrade()
+    {
+        if (CanUpgrade())
+        {
+            upgradeLevel++;
+            Debug.Log($"[ItemObject] {itemName} upgraded to +{upgradeLevel}");
+        }
+        else
+        {
+            Debug.LogWarning($"[ItemObject] Cannot upgrade {itemName}!");
+        }
+    }
+
+    /// <summary>
+    /// Get display name with upgrade level
+    /// </summary>
+    public string GetDisplayName()
+    {
+        if (upgradeLevel > 0 &&
+            (itemType == ItemType.Weapon ||
+             itemType == ItemType.Armor ||
+             itemType == ItemType.Accessory))
+        {
+            return $"{itemName} +{upgradeLevel}";
+        }
+        return itemName;
+    }
 }

@@ -19,8 +19,8 @@ MonoBehaviour:
   itemType: 1
   isStackable: 0
   maxStackSize: 99
-  buyPrice: 0
-  sellPrice: 0
+  buyPrice: 200
+  sellPrice: 100
   damageBonus: 0
   defenseBonus: 10
   speedBonus: 0

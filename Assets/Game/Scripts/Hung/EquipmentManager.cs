@@ -239,11 +239,12 @@ public class EquipmentManager : MonoBehaviour
     {
         if (playerStats == null || item == null) return;
 
+        // USE GetUpgradedX() thay vì raw values!
         playerStats.AddEquipmentBonus(
-            damage: item.damageBonus,
-            defense: item.defenseBonus,
-            speed: item.speedBonus,
-            critRate: item.critRateBonus
+            damage: item.GetUpgradedDamage(),      // ← Changed!
+            defense: item.GetUpgradedDefense(),    // ← Changed!
+            speed: item.GetUpgradedSpeed(),        // ← Changed!
+            critRate: item.GetUpgradedCritRate()   // ← Changed!
         );
     }
 
@@ -252,10 +253,10 @@ public class EquipmentManager : MonoBehaviour
         if (playerStats == null || item == null) return;
 
         playerStats.RemoveEquipmentBonus(
-            damage: item.damageBonus,
-            defense: item.defenseBonus,
-            speed: item.speedBonus,
-            critRate: item.critRateBonus
+            damage: item.GetUpgradedDamage(),      // ← Changed!
+            defense: item.GetUpgradedDefense(),    // ← Changed!
+            speed: item.GetUpgradedSpeed(),        // ← Changed!
+            critRate: item.GetUpgradedCritRate()   // ← Changed!
         );
     }
 

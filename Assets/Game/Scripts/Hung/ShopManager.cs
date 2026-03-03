@@ -45,6 +45,12 @@ public class ShopManager : MonoBehaviour
     private enum ShopTab { Buy, Sell, Upgrade }
     private ShopTab currentTab = ShopTab.Buy;
 
+    [Header("Upgrade Slots")]
+    [SerializeField] private UpgradeSlotUI weaponUpgradeSlot;
+    [SerializeField] private UpgradeSlotUI armorUpgradeSlot;
+    [SerializeField] private UpgradeSlotUI accessoryUpgradeSlot;
+
+
     // ============================================
     // KHỞI TẠO
     // ============================================
@@ -368,7 +374,88 @@ public class ShopManager : MonoBehaviour
 
     private void PopulateUpgradeGrid()
     {
-        Debug.Log("[ShopManager] Upgrade tab - Coming in Step 4");
+        Debug.Log("[ShopManager] Populating Upgrade Grid");
+
+        if (equipment == null)
+        {
+            Debug.LogError("[ShopManager] Equipment is NULL!");
+            return;
+        }
+
+        // Setup weapon slot
+        if (weaponUpgradeSlot != null)
+        {
+            ItemObject weapon = equipment.GetWeapon();
+            weaponUpgradeSlot.Setup(EquipmentSlot.Weapon, weapon, this);
+        }
+
+        // Setup armor slot
+        if (armorUpgradeSlot != null)
+        {
+            ItemObject armor = equipment.GetArmor();
+            armorUpgradeSlot.Setup(EquipmentSlot.Armor, armor, this);
+        }
+
+        // Setup accessory slot
+        if (accessoryUpgradeSlot != null)
+        {
+            ItemObject accessory = equipment.GetAccessory();
+            accessoryUpgradeSlot.Setup(EquipmentSlot.Accessory, accessory, this);
+        }
+    }
+
+    /// <summary>
+    /// Upgrade equipped item
+    /// </summary>
+    public void UpgradeItem(EquipmentSlot slot, ItemObject item)
+    {
+        if (item == null)
+        {
+            Debug.LogWarning("[ShopManager] Cannot upgrade null item!");
+            return;
+        }
+
+        if (!item.CanUpgrade())
+        {
+            Debug.LogWarning($"[ShopManager] {item.itemName} is already max level!");
+            return;
+        }
+
+        int cost = item.GetUpgradeCost();
+
+        // Check if has enough gold
+        if (!CurrencyManager.Instance.HasEnoughGold(cost))
+        {
+            Debug.LogWarning($"[ShopManager] Không đủ vàng để nâng cấp! Cần {cost} vàng");
+            return;
+        }
+
+        // Spend gold
+        if (CurrencyManager.Instance.SpendGold(cost))
+        {
+            // Store old stats for comparison
+            float oldDamage = item.GetUpgradedDamage();
+            float oldDefense = item.GetUpgradedDefense();
+
+            // IMPORTANT: Need to update equipment stats BEFORE upgrade
+            // Remove old bonuses
+            if (equipment.IsEquipped(item))
+            {
+                equipment.UnequipItem(slot);
+            }
+
+            // Upgrade the item
+            item.Upgrade();
+
+            // Re-equip with new stats
+            equipment.EquipItem(item);
+
+            Debug.Log($"[ShopManager] ✅ Nâng cấp {item.itemName} lên +{item.upgradeLevel}!");
+            Debug.Log($"  Old DMG: {oldDamage:F0} → New DMG: {item.GetUpgradedDamage():F0}");
+
+            // Refresh upgrade grid
+            PopulateUpgradeGrid();
+        }
     }
 
     // ============================================
@@ -442,8 +529,14 @@ public class ShopManager : MonoBehaviour
     {
         UpdateGoldDisplay();
         RefreshBuySlots();
+        RefreshUpgradeSlots();
     }
-
+    private void RefreshUpgradeSlots()
+    {
+        if (weaponUpgradeSlot != null) weaponUpgradeSlot.Refresh();
+        if (armorUpgradeSlot != null) armorUpgradeSlot.Refresh();
+        if (accessoryUpgradeSlot != null) accessoryUpgradeSlot.Refresh();
+    }
     private void UpdateGoldDisplay()
     {
         if (shopGoldText != null && CurrencyManager.Instance != null)
@@ -463,4 +556,6 @@ public class ShopManager : MonoBehaviour
             }
         }
     }
+
+    
 }
