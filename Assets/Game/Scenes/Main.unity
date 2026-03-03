@@ -96319,6 +96319,29 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0bdd578b9deb5ee4c9d7cd56a6b0c7d2, type: 3}
+--- !u!1 &916480364 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3682466346997056394, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
+  m_PrefabInstance: {fileID: 6255775751834421597}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &916480365
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 916480364}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95143cd9022791940b7a3be9b4a53a08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootTable: {fileID: 11400000, guid: 08c96d39314ecee48a8cd8dc6f1cc110, type: 2}
+  droppedItemPrefab: {fileID: 633812134335564413, guid: 722c9261ffb708c44840173282e1a770, type: 3}
+  dropRadius: 1.5
+  dropHeightOffset: 0.5
+  launchForce: 3
+  spreadForce: 1.5
 --- !u!1001 &916950982
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -98494,7 +98517,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
+        - m_Target: {fileID: 232472556}
           m_TargetAssemblyTypeName: PlayerAttack, Assembly-CSharp
           m_MethodName: OnAttackHold
           m_Mode: 1
@@ -98510,7 +98533,7 @@ MonoBehaviour:
     callback:
       m_PersistentCalls:
         m_Calls:
-        - m_Target: {fileID: 0}
+        - m_Target: {fileID: 232472556}
           m_TargetAssemblyTypeName: PlayerAttack, Assembly-CSharp
           m_MethodName: OnAttackRelease
           m_Mode: 1
@@ -111349,7 +111372,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
+      - m_Target: {fileID: 5102316048198465838}
         m_TargetAssemblyTypeName: PlayerFireBall, Assembly-CSharp
         m_MethodName: FireButton
         m_Mode: 1
@@ -246708,7 +246731,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1302527268497033953, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
       propertyPath: maxHealth
-      value: 800
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 1655589851976725318, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
       propertyPath: m_IsKinematic
@@ -246760,12 +246783,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3682466346997056394, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3682466346997056394, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 916480365}
   m_SourcePrefab: {fileID: 100100000, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
 --- !u!4 &6286183934538507856
 Transform:

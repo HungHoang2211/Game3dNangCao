@@ -4848,7 +4848,7 @@ GameObject:
   - component: {fileID: 2069421265797856411}
   - component: {fileID: -1647102671774814355}
   m_Layer: 0
-  m_Name: FX_Fire_03
+  m_Name: FireBall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

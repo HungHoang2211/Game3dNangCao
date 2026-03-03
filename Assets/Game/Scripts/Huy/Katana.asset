@@ -21,7 +21,7 @@ MonoBehaviour:
   maxStackSize: 99
   buyPrice: 100
   sellPrice: 50
-  damageBonus: 10
+  damageBonus: 100
   defenseBonus: 0
   speedBonus: 0
   critRateBonus: 50
@@ -37,4 +37,4 @@ MonoBehaviour:
   - {r: 1, g: 0.5, b: 0, a: 1}
   hpRestore: 0
   usableInCombat: 1
-  equipPrefab: {fileID: 5327970186819985746, guid: 0342fe68c879cfb418a1abc857737753, type: 3}
+  equipPrefab: {fileID: 401752947605086326, guid: 98e6ab24309e62046822af1f49e42473, type: 3}
