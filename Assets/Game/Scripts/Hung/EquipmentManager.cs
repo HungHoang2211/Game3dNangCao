@@ -57,6 +57,7 @@ public class EquipmentManager : MonoBehaviour
 
     /// <summary>
     /// Equip item from inventory
+    /// FIXED: Allow equip even when full if swapping
     /// </summary>
     public bool EquipItem(ItemObject item)
     {
@@ -68,11 +69,10 @@ public class EquipmentManager : MonoBehaviour
 
         if (inventory == null)
         {
-            Debug.LogError("[EquipmentManager] Inventory is null! Cannot equip item.");
+            Debug.LogError("[EquipmentManager] Inventory is null!");
             return false;
         }
 
-        // Check if item is equipment
         EquipmentSlot slot = item.GetEquipmentSlot();
         if (slot == EquipmentSlot.None)
         {
@@ -80,34 +80,41 @@ public class EquipmentManager : MonoBehaviour
             return false;
         }
 
-        // Check if player has item in inventory
         if (!inventory.HasItem(item, 1))
         {
             Debug.LogWarning($"[EquipmentManager] {item.itemName} not found in inventory!");
             return false;
         }
 
-        // Unequip current item in that slot (if any)
         ItemObject currentItem = GetEquippedItem(slot);
+
+        // FIXED: Check if can unequip
+        // But allow if inventory is full AND we're swapping (item being equipped is in inventory)
         if (currentItem != null)
         {
-            // Check if can unequip before equipping new item
+            // Check normally
             if (!CanUnequip(slot))
             {
-                Debug.LogWarning($"[EquipmentManager] Cannot unequip {currentItem.itemName} - inventory full!");
-                return false;
+                // SPECIAL CASE: If inventory full BUT the item we're equipping is IN inventory
+                // → After removing it, there WILL be space for unequipped item
+                // → Allow the swap!
+                if (inventory.IsFull() && inventory.HasItem(item, 1))
+                {
+                    Debug.Log($"[EquipmentManager] Inventory full but swapping {currentItem.itemName} ↔ {item.itemName}");
+                    // Allow to continue - will have space after RemoveItem
+                }
+                else
+                {
+                    Debug.LogWarning($"[EquipmentManager] Cannot unequip {currentItem.itemName} - inventory full!");
+                    return false;
+                }
             }
 
             UnequipItem(slot);
         }
 
-        // Remove from inventory
         inventory.RemoveItem(item, 1);
-
-        // Equip new item
         SetEquippedItem(slot, item);
-
-        // Apply stat bonuses
         ApplyEquipmentBonuses(item);
 
         Debug.Log($"[EquipmentManager] Equipped {item.itemName} to {slot} slot");
@@ -315,4 +322,55 @@ public class EquipmentManager : MonoBehaviour
         Debug.Log($"Armor: {(equippedArmor != null ? equippedArmor.itemName : "None")}");
         Debug.Log($"Accessory: {(equippedAccessory != null ? equippedAccessory.itemName : "None")}");
     }
+
+    /// <summary>
+    /// Unequip item WITHOUT adding to inventory (for manual swap)
+    /// </summary>
+    public bool UnequipItemWithoutInventory(EquipmentSlot slot)
+    {
+        ItemObject item = GetEquippedItem(slot);
+
+        if (item == null)
+        {
+            Debug.LogWarning($"[EquipmentManager] No item equipped in {slot} slot!");
+            return false;
+        }
+
+        // Remove stat bonuses
+        RemoveEquipmentBonuses(item);
+
+        // Clear slot (but DON'T add to inventory)
+        SetEquippedItem(slot, null);
+
+        Debug.Log($"[EquipmentManager] Unequipped {item.itemName} (no inventory add)");
+
+        OnEquipmentChanged?.Invoke(slot, null);
+
+        return true;
+    }
+
+    /// <summary>
+    /// Equip item directly WITHOUT removing from inventory (for manual swap)
+    /// </summary>
+    public bool EquipItemDirectly(EquipmentSlot slot, ItemObject item)
+    {
+        if (item == null)
+        {
+            Debug.LogWarning("[EquipmentManager] Cannot equip null item!");
+            return false;
+        }
+
+        // Equip item (assume already removed from inventory)
+        SetEquippedItem(slot, item);
+
+        // Apply stat bonuses
+        ApplyEquipmentBonuses(item);
+
+        Debug.Log($"[EquipmentManager] Equipped {item.itemName} directly to {slot} slot");
+
+        OnEquipmentChanged?.Invoke(slot, item);
+
+        return true;
+    }
+
 }

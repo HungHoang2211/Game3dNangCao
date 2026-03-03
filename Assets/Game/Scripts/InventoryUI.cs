@@ -345,14 +345,13 @@ public class InventoryUI : MonoBehaviour
     }
 
     /// <summary>
-    /// Unequip item from equipment slot to specific inventory slot (drag-drop)
-    /// FIXED: Allow swap even when inventory is full
+    /// Unequip to inventory slot - Place in EXACT target slot
     /// </summary>
     public void UnequipToSlot(EquipmentSlot equipmentSlotType, int targetInventorySlot)
     {
         if (equipment == null || inventory == null) return;
 
-        // Get currently equipped item
+        // Get equipped item
         ItemObject equippedItem = null;
 
         switch (equipmentSlotType)
@@ -370,65 +369,86 @@ public class InventoryUI : MonoBehaviour
 
         if (equippedItem == null)
         {
-            Debug.LogWarning($"[InventoryUI] No item equipped in {equipmentSlotType} slot!");
+            Debug.LogWarning($"[InventoryUI] No item in {equipmentSlotType}!");
             return;
         }
 
-        // Check target inventory slot
+        // Get target slot
         InventorySlot targetSlot = inventory.GetSlot(targetInventorySlot);
-        if (targetSlot == null) return;
+        if (targetSlot == null)
+        {
+            Debug.LogError($"[InventoryUI] Invalid slot: {targetInventorySlot}");
+            return;
+        }
 
-        // CASE 1: Target slot is empty - simple unequip
+        Debug.Log($"[InventoryUI] Unequip {equippedItem.itemName} → slot {targetInventorySlot}");
+
+        // CASE 1: Empty target - PLACE IN EXACT SLOT
         if (targetSlot.IsEmpty())
         {
             if (inventory.IsFull())
             {
-                Debug.LogWarning("[InventoryUI] Cannot unequip - inventory full!");
+                Debug.LogWarning("[InventoryUI] Inventory full!");
                 return;
             }
 
-            equipment.UnequipItem(equipmentSlotType);
-            Debug.Log($"[InventoryUI] Unequipped {equippedItem.itemName} to empty slot {targetInventorySlot}");
+            // FIXED: Place in EXACT target slot, not first empty slot!
+            // Step 1: Unequip WITHOUT adding to inventory
+            equipment.UnequipItemWithoutInventory(equipmentSlotType);
+
+            // Step 2: Place DIRECTLY in target slot
+            targetSlot.item = equippedItem;
+            targetSlot.quantity = 1;
+
+            Debug.Log($"[InventoryUI] Unequipped to exact slot {targetInventorySlot}");
+
+            RefreshInventoryUI();
             return;
         }
 
-        // CASE 2: Target slot has item - try to swap
+        // CASE 2: Target has item - ATOMIC SWAP
         ItemObject targetItem = targetSlot.item;
 
-        // Check if target item can be equipped to same slot
         if (targetItem.GetEquipmentSlot() == equipmentSlotType)
         {
-            // SWAP: This works even when inventory is full!
-            Debug.Log($"[InventoryUI] Swapping {equippedItem.itemName} ↔ {targetItem.itemName}");
+            // ATOMIC SWAP
+            Debug.Log($"[InventoryUI] ATOMIC SWAP: {equippedItem.itemName} ↔ {targetItem.itemName}");
 
-            // Step 1: Remove target item from inventory (make space)
-            inventory.RemoveItem(targetItem, 1);
+            // Step 1: Clear target slot MANUALLY
+            targetSlot.item = null;
+            targetSlot.quantity = 0;
 
-            // Step 2: Unequip current item (goes to inventory)
-            equipment.UnequipItem(equipmentSlotType);
+            // Step 2: Unequip WITHOUT adding to inventory
+            equipment.UnequipItemWithoutInventory(equipmentSlotType);
 
-            // Step 3: Equip target item
-            equipment.EquipItem(targetItem);
+            // Step 3: Put unequipped item in target slot MANUALLY
+            targetSlot.item = equippedItem;
+            targetSlot.quantity = 1;
+
+            // Step 4: Equip target item DIRECTLY
+            equipment.EquipItemDirectly(equipmentSlotType, targetItem);
 
             Debug.Log($"[InventoryUI] Swap complete!");
+
+            RefreshInventoryUI();
         }
         else
         {
-            // Can't swap - target item is different type
+            // Can't swap - incompatible
             if (inventory.IsFull())
             {
-                Debug.LogWarning("[InventoryUI] Inventory full! Cannot unequip (target item not compatible).");
+                Debug.LogWarning("[InventoryUI] Full! Target incompatible.");
                 return;
             }
 
-            equipment.UnequipItem(equipmentSlotType);
-            Debug.Log($"[InventoryUI] Unequipped {equippedItem.itemName}");
+            // FIXED: Still place in exact slot
+            equipment.UnequipItemWithoutInventory(equipmentSlotType);
+            targetSlot.item = equippedItem;
+            targetSlot.quantity = 1;
+
+            RefreshInventoryUI();
         }
     }
-
-    /// <summary>
-    /// Swap two equipment slots (drag-drop between equipment slots)
-    /// </summary>
     public void SwapEquipmentSlots(EquipmentSlot fromSlot, EquipmentSlot toSlot)
     {
         if (equipment == null) return;
