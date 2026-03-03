@@ -40,6 +40,11 @@ public class InventoryDebugger : MonoBehaviour
             inventory.AddItem(4, 10); // 10x Iron Ore
         }
 
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            inventory.AddItem(5, 1); // katana
+        }
+
         // Equip/Unequip
         if (Input.GetKeyDown(KeyCode.E))
         {

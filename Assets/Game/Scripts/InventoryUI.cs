@@ -1,11 +1,11 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
 /// <summary>
 /// Main UI controller for inventory system
-/// Manages inventory grid, equipment slots, and tooltips
+/// FIXED: Proper swap logic + Equipment swap when full
 /// </summary>
 public class InventoryUI : MonoBehaviour
 {
@@ -47,7 +47,6 @@ public class InventoryUI : MonoBehaviour
 
     private void Awake()
     {
-        // Auto-find references if not assigned
         if (inventory == null)
         {
             inventory = FindAnyObjectByType<InventoryManager>();
@@ -64,7 +63,6 @@ public class InventoryUI : MonoBehaviour
         CreateInventorySlots();
         InitializeEquipmentSlots();
 
-        // Subscribe to events
         if (inventory != null)
         {
             inventory.OnInventoryChanged += RefreshInventoryUI;
@@ -75,25 +73,21 @@ public class InventoryUI : MonoBehaviour
             equipment.OnEquipmentChanged += OnEquipmentChanged;
         }
 
-        // Setup close button
         if (closeButton != null)
         {
             closeButton.onClick.AddListener(CloseInventory);
         }
 
-        // Hide tooltip
         if (tooltipPanel != null)
         {
             tooltipPanel.SetActive(false);
         }
 
-        // Start with inventory closed
         CloseInventory();
     }
 
     private void OnDestroy()
     {
-        // Unsubscribe from events
         if (inventory != null)
         {
             inventory.OnInventoryChanged -= RefreshInventoryUI;
@@ -117,7 +111,6 @@ public class InventoryUI : MonoBehaviour
             return;
         }
 
-        // CRITICAL FIX: Don't create slots if already created
         if (slotUIList.Count > 0)
         {
             Debug.LogWarning("[InventoryUI] Slots already created. Skipping...");
@@ -166,7 +159,6 @@ public class InventoryUI : MonoBehaviour
             {
                 slotUIList[i].UpdateSlotUI(slots[i]);
 
-                // Highlight equipped items
                 if (!slots[i].IsEmpty() && equipment.IsEquipped(slots[i].item))
                 {
                     slotUIList[i].SetHighlight(true);
@@ -193,7 +185,6 @@ public class InventoryUI : MonoBehaviour
 
     private void OnEquipmentChanged(EquipmentSlot slot, ItemObject item)
     {
-        // Update equipment slot UI
         switch (slot)
         {
             case EquipmentSlot.Weapon:
@@ -207,7 +198,6 @@ public class InventoryUI : MonoBehaviour
                 break;
         }
 
-        // Refresh inventory to update highlights
         RefreshInventoryUI();
     }
 
@@ -223,23 +213,19 @@ public class InventoryUI : MonoBehaviour
 
         ItemObject item = slot.item;
 
-        // Handle different item types
         switch (item.itemType)
         {
             case ItemType.Weapon:
             case ItemType.Armor:
             case ItemType.Accessory:
-                // Equip/Unequip
                 equipment.ToggleEquip(item);
                 break;
 
             case ItemType.Consumable:
-                // Use consumable
                 UseConsumable(item, slotIndex);
                 break;
 
             case ItemType.Material:
-                // Materials cannot be used directly
                 Debug.Log($"[InventoryUI] {item.itemName} is a material. Use it in crafting/upgrading.");
                 break;
         }
@@ -247,7 +233,6 @@ public class InventoryUI : MonoBehaviour
 
     public void OnSlotRightClicked(int slotIndex)
     {
-        // Right click to drop item (PC only feature for now)
         InventorySlot slot = inventory.GetSlot(slotIndex);
 
         if (slot == null || slot.IsEmpty()) return;
@@ -258,7 +243,6 @@ public class InventoryUI : MonoBehaviour
 
     public void OnEquipmentSlotClicked(EquipmentSlot slotType)
     {
-        // Unequip item
         equipment.UnequipItem(slotType);
     }
 
@@ -270,7 +254,6 @@ public class InventoryUI : MonoBehaviour
     {
         if (item.itemType != ItemType.Consumable) return;
 
-        // Find PlayerStats
         PlayerStats playerStats = FindAnyObjectByType<PlayerStats>();
 
         if (playerStats != null && item.hpRestore > 0)
@@ -278,9 +261,244 @@ public class InventoryUI : MonoBehaviour
             playerStats.Heal(item.hpRestore);
             Debug.Log($"[InventoryUI] Used {item.itemName}, restored {item.hpRestore} HP");
 
-            // Remove 1 from stack
             inventory.RemoveItemFromSlot(slotIndex, 1);
         }
+    }
+
+    // ============================================
+    // DRAG AND DROP SWAP OPERATIONS
+    // ============================================
+
+    /// <summary>
+    /// ULTRA SAFE swap - No events, direct manipulation
+    /// </summary>
+    public void SwapInventorySlots(int fromIndex, int toIndex)
+    {
+        if (inventory == null)
+        {
+            Debug.LogError("[InventoryUI] Inventory is null!");
+            return;
+        }
+
+        InventorySlot[] allSlots = inventory.GetAllSlots();
+
+        // Validate indices
+        if (fromIndex < 0 || fromIndex >= allSlots.Length)
+        {
+            Debug.LogError($"[InventoryUI] Invalid fromIndex: {fromIndex}");
+            return;
+        }
+
+        if (toIndex < 0 || toIndex >= allSlots.Length)
+        {
+            Debug.LogError($"[InventoryUI] Invalid toIndex: {toIndex}");
+            return;
+        }
+
+        // Get references
+        InventorySlot fromSlot = allSlots[fromIndex];
+        InventorySlot toSlot = allSlots[toIndex];
+
+        // Store values (not references!)
+        ItemObject tempItem = fromSlot.item;
+        int tempQuantity = fromSlot.quantity;
+
+        // Swap in one atomic operation
+        fromSlot.item = toSlot.item;
+        fromSlot.quantity = toSlot.quantity;
+
+        toSlot.item = tempItem;
+        toSlot.quantity = tempQuantity;
+
+        // Verify swap
+        Debug.Log($"[InventoryUI] SWAP COMPLETE:");
+        Debug.Log($"  fromSlot ({fromIndex}): {(fromSlot.item != null ? fromSlot.item.itemName + " x" + fromSlot.quantity : "EMPTY")}");
+        Debug.Log($"  toSlot ({toIndex}): {(toSlot.item != null ? toSlot.item.itemName + " x" + toSlot.quantity : "EMPTY")}");
+
+        // Force UI refresh
+        RefreshInventoryUI();
+    }
+
+    /// <summary>
+    /// Equip item from inventory slot to equipment slot (drag-drop)
+    /// </summary>
+    public void EquipToSlot(int inventorySlotIndex, EquipmentSlot equipmentSlotType)
+    {
+        if (inventory == null || equipment == null) return;
+
+        InventorySlot invSlot = inventory.GetSlot(inventorySlotIndex);
+        if (invSlot == null || invSlot.IsEmpty()) return;
+
+        ItemObject item = invSlot.item;
+
+        EquipmentSlot itemSlotType = item.GetEquipmentSlot();
+
+        if (itemSlotType != equipmentSlotType)
+        {
+            Debug.LogWarning($"[InventoryUI] Cannot equip {item.itemName} ({itemSlotType}) to {equipmentSlotType} slot!");
+            return;
+        }
+
+        equipment.EquipItem(item);
+
+        Debug.Log($"[InventoryUI] Equipped {item.itemName} from inventory to {equipmentSlotType} slot");
+    }
+
+    /// <summary>
+    /// Unequip item from equipment slot to specific inventory slot (drag-drop)
+    /// FIXED: Allow swap even when inventory is full
+    /// </summary>
+    public void UnequipToSlot(EquipmentSlot equipmentSlotType, int targetInventorySlot)
+    {
+        if (equipment == null || inventory == null) return;
+
+        // Get currently equipped item
+        ItemObject equippedItem = null;
+
+        switch (equipmentSlotType)
+        {
+            case EquipmentSlot.Weapon:
+                equippedItem = equipment.GetWeapon();
+                break;
+            case EquipmentSlot.Armor:
+                equippedItem = equipment.GetArmor();
+                break;
+            case EquipmentSlot.Accessory:
+                equippedItem = equipment.GetAccessory();
+                break;
+        }
+
+        if (equippedItem == null)
+        {
+            Debug.LogWarning($"[InventoryUI] No item equipped in {equipmentSlotType} slot!");
+            return;
+        }
+
+        // Check target inventory slot
+        InventorySlot targetSlot = inventory.GetSlot(targetInventorySlot);
+        if (targetSlot == null) return;
+
+        // CASE 1: Target slot is empty - simple unequip
+        if (targetSlot.IsEmpty())
+        {
+            if (inventory.IsFull())
+            {
+                Debug.LogWarning("[InventoryUI] Cannot unequip - inventory full!");
+                return;
+            }
+
+            equipment.UnequipItem(equipmentSlotType);
+            Debug.Log($"[InventoryUI] Unequipped {equippedItem.itemName} to empty slot {targetInventorySlot}");
+            return;
+        }
+
+        // CASE 2: Target slot has item - try to swap
+        ItemObject targetItem = targetSlot.item;
+
+        // Check if target item can be equipped to same slot
+        if (targetItem.GetEquipmentSlot() == equipmentSlotType)
+        {
+            // SWAP: This works even when inventory is full!
+            Debug.Log($"[InventoryUI] Swapping {equippedItem.itemName} ↔ {targetItem.itemName}");
+
+            // Step 1: Remove target item from inventory (make space)
+            inventory.RemoveItem(targetItem, 1);
+
+            // Step 2: Unequip current item (goes to inventory)
+            equipment.UnequipItem(equipmentSlotType);
+
+            // Step 3: Equip target item
+            equipment.EquipItem(targetItem);
+
+            Debug.Log($"[InventoryUI] Swap complete!");
+        }
+        else
+        {
+            // Can't swap - target item is different type
+            if (inventory.IsFull())
+            {
+                Debug.LogWarning("[InventoryUI] Inventory full! Cannot unequip (target item not compatible).");
+                return;
+            }
+
+            equipment.UnequipItem(equipmentSlotType);
+            Debug.Log($"[InventoryUI] Unequipped {equippedItem.itemName}");
+        }
+    }
+
+    /// <summary>
+    /// Swap two equipment slots (drag-drop between equipment slots)
+    /// </summary>
+    public void SwapEquipmentSlots(EquipmentSlot fromSlot, EquipmentSlot toSlot)
+    {
+        if (equipment == null) return;
+
+        if (fromSlot == toSlot)
+        {
+            Debug.LogWarning("[InventoryUI] Cannot swap equipment slot with itself!");
+            return;
+        }
+
+        ItemObject fromItem = null;
+        ItemObject toItem = null;
+
+        switch (fromSlot)
+        {
+            case EquipmentSlot.Weapon:
+                fromItem = equipment.GetWeapon();
+                break;
+            case EquipmentSlot.Armor:
+                fromItem = equipment.GetArmor();
+                break;
+            case EquipmentSlot.Accessory:
+                fromItem = equipment.GetAccessory();
+                break;
+        }
+
+        switch (toSlot)
+        {
+            case EquipmentSlot.Weapon:
+                toItem = equipment.GetWeapon();
+                break;
+            case EquipmentSlot.Armor:
+                toItem = equipment.GetArmor();
+                break;
+            case EquipmentSlot.Accessory:
+                toItem = equipment.GetAccessory();
+                break;
+        }
+
+        if (fromItem == null)
+        {
+            Debug.LogWarning($"[InventoryUI] No item in {fromSlot} slot!");
+            return;
+        }
+
+        if (fromItem.GetEquipmentSlot() != toSlot)
+        {
+            Debug.LogWarning($"[InventoryUI] Cannot equip {fromItem.itemName} ({fromItem.GetEquipmentSlot()}) to {toSlot} slot!");
+            return;
+        }
+
+        if (toItem != null && toItem.GetEquipmentSlot() != fromSlot)
+        {
+            Debug.LogWarning($"[InventoryUI] Cannot swap - items are incompatible!");
+            return;
+        }
+
+        equipment.UnequipItem(fromSlot);
+        if (toItem != null)
+        {
+            equipment.UnequipItem(toSlot);
+        }
+
+        equipment.EquipItem(fromItem);
+        if (toItem != null)
+        {
+            equipment.EquipItem(toItem);
+        }
+
+        Debug.Log($"[InventoryUI] Swapped {fromSlot} ↔ {toSlot}");
     }
 
     // ============================================
@@ -294,8 +512,6 @@ public class InventoryUI : MonoBehaviour
         tooltipText.text = item.GetTooltip();
         tooltipPanel.SetActive(true);
 
-        // Position tooltip near mouse (for PC)
-        // For mobile: position near touched slot
         Vector2 mousePos = Input.mousePosition;
         tooltipPanel.transform.position = mousePos + new Vector2(10, -10);
     }
@@ -328,7 +544,6 @@ public class InventoryUI : MonoBehaviour
     {
         Debug.Log("[InventoryUI] Opening inventory");
 
-        // Show inventory and equipment panels
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(true);
@@ -341,21 +556,15 @@ public class InventoryUI : MonoBehaviour
 
         isInventoryOpen = true;
 
-        // Hide other canvases (e.g., HUD)
         HideOtherCanvases();
 
-        // Refresh UI
         RefreshInventoryUI();
-
-        // Optional: Pause game
-        // Time.timeScale = 0f;
     }
 
     public void CloseInventory()
     {
         Debug.Log("[InventoryUI] Closing inventory");
 
-        // Hide inventory and equipment panels
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(false);
@@ -368,14 +577,9 @@ public class InventoryUI : MonoBehaviour
 
         isInventoryOpen = false;
 
-        // Show other canvases again
         ShowOtherCanvases();
 
-        // Hide tooltip
         HideTooltip();
-
-        // Optional: Resume game
-        // Time.timeScale = 1f;
     }
 
     // ============================================
@@ -416,14 +620,11 @@ public class InventoryUI : MonoBehaviour
 
     private void Update()
     {
-        // Toggle inventory with I key (PC)
-        // For mobile: use UI button
         if (Input.GetKeyDown(KeyCode.I))
         {
             ToggleInventory();
         }
 
-        // Close with Escape
         if (Input.GetKeyDown(KeyCode.Escape) && isInventoryOpen)
         {
             CloseInventory();

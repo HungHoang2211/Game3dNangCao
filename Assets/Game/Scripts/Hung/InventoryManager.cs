@@ -404,4 +404,13 @@ public class InventoryManager : MonoBehaviour
 
         Debug.Log($"Empty slots: {GetEmptySlotCount()}/{inventorySize}");
     }
+
+    /// <summary>
+    /// Show inventory message to user (callable from outside)
+    /// </summary>
+    public void ShowMessage(string message)
+    {
+        Debug.LogWarning($"[InventoryManager] {message}");
+        OnInventoryMessage?.Invoke(message);
+    }
 }
