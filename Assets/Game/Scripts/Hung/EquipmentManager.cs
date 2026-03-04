@@ -241,10 +241,11 @@ public class EquipmentManager : MonoBehaviour
 
         // USE GetUpgradedX() thay vì raw values!
         playerStats.AddEquipmentBonus(
-            damage: item.GetUpgradedDamage(),      // ← Changed!
-            defense: item.GetUpgradedDefense(),    // ← Changed!
-            speed: item.GetUpgradedSpeed(),        // ← Changed!
-            critRate: item.GetUpgradedCritRate()   // ← Changed!
+            damage: item.GetUpgradedDamage(),
+            defense: item.GetUpgradedDefense(),
+            speed: item.GetUpgradedSpeed(),
+            critRate: item.GetUpgradedCritRate(),
+            attackRange: item.GetUpgradedAttackRange()
         );
     }
 
@@ -253,10 +254,11 @@ public class EquipmentManager : MonoBehaviour
         if (playerStats == null || item == null) return;
 
         playerStats.RemoveEquipmentBonus(
-            damage: item.GetUpgradedDamage(),      // ← Changed!
-            defense: item.GetUpgradedDefense(),    // ← Changed!
-            speed: item.GetUpgradedSpeed(),        // ← Changed!
-            critRate: item.GetUpgradedCritRate()   // ← Changed!
+            damage: item.GetUpgradedDamage(),      
+            defense: item.GetUpgradedDefense(),   
+            speed: item.GetUpgradedSpeed(),       
+            critRate: item.GetUpgradedCritRate()  ,
+            attackRange: item.GetUpgradedAttackRange()
         );
     }
 

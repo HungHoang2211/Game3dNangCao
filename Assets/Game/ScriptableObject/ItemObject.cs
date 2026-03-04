@@ -51,6 +51,8 @@ public class ItemObject : ScriptableObject
     [Tooltip("Crit Rate bonus (%)")]
     public float critRateBonus = 0f;
 
+    [Tooltip("Attack range bonus (for weapons)")]
+    public float attackRangeBonus = 0f;
 
     [Header("Upgrade System (for Equipment)")]
     [Tooltip("Current upgrade level (0-10)")]
@@ -79,6 +81,10 @@ public class ItemObject : ScriptableObject
 
     [Tooltip("Can be used in combat?")]
     public bool usableInCombat = true;
+
+    [Header("3D Model (for Equipment)")]
+    [Tooltip("Prefab 3D sẽ hiển thị khi trang bị")]
+    public GameObject equipPrefab;
 
     // ============================================
     // HELPER METHODS
@@ -207,7 +213,10 @@ public class ItemObject : ScriptableObject
     {
         return critRateBonus * (1f + (upgradeLevel * 0.1f));
     }
-
+    public float GetUpgradedAttackRange()
+    {
+        return attackRangeBonus * (1f + (upgradeLevel * 0.1f));
+    }
     /// <summary>
     /// Upgrade item to next level
     /// </summary>
