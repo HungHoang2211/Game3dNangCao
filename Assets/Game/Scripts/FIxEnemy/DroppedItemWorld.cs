@@ -1,217 +1,195 @@
 using UnityEngine;
-using TMPro;
 
 /// <summary>
-/// 3D world pickup item. Spawned by EnemyLootDrop when enemy dies.
-/// Player walks into trigger collider to pick up into inventory.
+/// Item pickup in 3D world. Auto-creates its own visual from item icon.
+/// No Rigidbody needed - placed directly on ground by EnemyLootDrop.
 /// 
 /// PREFAB SETUP:
-/// 1. Create empty GameObject, name it "DroppedItemPrefab"
-/// 2. Add this script (DroppedItemWorld)
-/// 3. Add SphereCollider (isTrigger = true, radius ~1.0)
-/// 4. Add Rigidbody (useGravity = true, for bounce effect)
-/// 5. (Optional) Add a child with SpriteRenderer or 3D model for visual
-/// 6. (Optional) Add a child with TextMeshPro for quantity label
-/// 7. Save as Prefab
-/// 
-/// HOW IT WORKS:
-/// - EnemyLootDrop spawns this prefab and calls Initialize(item, qty)
-/// - Item falls to ground with physics
-/// - When player enters trigger -> auto pickup into InventoryManager
-/// - If inventory full -> item stays on ground with warning message
+/// 1. Create empty GameObject named DroppedItemPrefab
+/// 2. Add this DroppedItemWorld script
+/// 3. Save as Prefab. DONE.
+///    Script auto-adds collider and creates sprite visual at runtime.
 /// </summary>
 public class DroppedItemWorld : MonoBehaviour
 {
-    [Header("Item Data (Set at runtime)")]
-    [SerializeField] private ItemObject item;
-    [SerializeField] private int quantity = 1;
+    [Header("Item Data (Set at runtime - do not edit)")]
+    private ItemObject item;
+    private int quantity = 1;
 
     [Header("Pickup Settings")]
-    [Tooltip("Tag of the player GameObject")]
     [SerializeField] private string playerTag = "Player";
+    [SerializeField] private float pickupRadius = 1.5f;
+    [SerializeField] private float pickupDelay = 0.8f;
+    [SerializeField] private float lifetime = 120f;
 
-    [Tooltip("Delay before item can be picked up (prevents instant grab)")]
-    [SerializeField] private float pickupDelay = 0.5f;
-
-    [Tooltip("Auto destroy after this many seconds (0 = never)")]
-    [SerializeField] private float lifetime = 60f;
-
-    [Header("Visual (Optional)")]
-    [Tooltip("SpriteRenderer to show item icon")]
-    [SerializeField] private SpriteRenderer iconRenderer;
-
-    [Tooltip("TextMeshPro for quantity display")]
-    [SerializeField] private TextMeshPro quantityText;
-
-    [Header("Floating Animation")]
-    [SerializeField] private bool enableFloating = true;
+    [Header("Visual Settings")]
+    [SerializeField] private float spriteScale = 0.8f;
     [SerializeField] private float floatAmplitude = 0.15f;
     [SerializeField] private float floatSpeed = 2f;
-    [SerializeField] private float rotateSpeed = 90f;
+    [SerializeField] private float rotateSpeed = 60f;
 
     private float spawnTime;
     private bool isPickedUp = false;
-    private Vector3 basePosition;
-    private bool isGrounded = false;
-    private Rigidbody rb;
+    private Vector3 groundPosition;
+    private GameObject visualObj;
+    private SpriteRenderer spriteRenderer;
 
     // ============================================
-    // INITIALIZATION
+    // INITIALIZATION (called by EnemyLootDrop)
     // ============================================
 
-    /// <summary>
-    /// Called by EnemyLootDrop after instantiation
-    /// </summary>
     public void Initialize(ItemObject droppedItem, int qty)
     {
         item = droppedItem;
         quantity = qty;
         spawnTime = Time.time;
+        groundPosition = transform.position;
 
-        UpdateVisual();
+        SetupCollider();
+        CreateVisual();
 
-        Debug.Log($"[DroppedItemWorld] Initialized: {qty}x {droppedItem.itemName}");
+        gameObject.name = "Drop_" + droppedItem.itemName;
     }
 
     private void Start()
     {
-        spawnTime = Time.time;
-        rb = GetComponent<Rigidbody>();
+        if (spawnTime == 0f)
+            spawnTime = Time.time;
 
         if (lifetime > 0f)
-        {
             Destroy(gameObject, lifetime);
-        }
     }
 
-    private void Update()
+    // ============================================
+    // AUTO SETUP COLLIDER
+    // ============================================
+
+    private void SetupCollider()
     {
-        if (!enableFloating || !isGrounded) return;
+        // Remove existing colliders to avoid conflicts
+        Collider[] existing = GetComponents<Collider>();
+        foreach (var c in existing)
+            Destroy(c);
 
-        // Float up and down
-        Vector3 pos = basePosition;
-        pos.y += Mathf.Sin(Time.time * floatSpeed) * floatAmplitude;
-        transform.position = pos;
-
-        // Slow rotation
-        transform.Rotate(Vector3.up, rotateSpeed * Time.deltaTime);
+        // Add trigger sphere for player pickup detection only
+        SphereCollider trigger = gameObject.AddComponent<SphereCollider>();
+        trigger.isTrigger = true;
+        trigger.radius = pickupRadius;
+        trigger.center = Vector3.zero;
     }
 
     // ============================================
-    // VISUAL
+    // AUTO CREATE VISUAL FROM ITEM ICON
     // ============================================
 
-    private void UpdateVisual()
+    private void CreateVisual()
     {
         if (item == null) return;
 
-        // Show item icon as sprite
-        if (iconRenderer != null && item.icon != null)
-        {
-            iconRenderer.sprite = item.icon;
-        }
+        visualObj = new GameObject("Visual");
+        visualObj.transform.SetParent(transform);
+        visualObj.transform.localPosition = Vector3.zero;
 
-        // Show quantity text
-        if (quantityText != null)
+        if (item.icon != null)
         {
-            if (quantity > 1)
+            // Use item icon as billboard sprite
+            visualObj.transform.localScale = Vector3.one * spriteScale;
+            spriteRenderer = visualObj.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = item.icon;
+            spriteRenderer.sortingOrder = 100;
+        }
+        else
+        {
+            // Fallback: colored cube when no icon assigned
+            GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            cube.transform.SetParent(visualObj.transform);
+            cube.transform.localPosition = Vector3.zero;
+            cube.transform.localScale = Vector3.one * 0.3f;
+
+            // Remove cube's collider (we have our own trigger)
+            Collider cubeCol = cube.GetComponent<Collider>();
+            if (cubeCol != null) Destroy(cubeCol);
+
+            Renderer rend = cube.GetComponent<Renderer>();
+            if (rend != null)
             {
-                quantityText.text = $"x{quantity}";
-                quantityText.gameObject.SetActive(true);
-            }
-            else
-            {
-                quantityText.gameObject.SetActive(false);
+                Color c = Color.yellow;
+                if (item.itemType == ItemType.Weapon) c = Color.red;
+                else if (item.itemType == ItemType.Armor) c = Color.blue;
+                else if (item.itemType == ItemType.Consumable) c = Color.green;
+                rend.material.color = c;
             }
         }
-
-        gameObject.name = $"Drop_{item.itemName}_x{quantity}";
     }
 
     // ============================================
-    // PHYSICS - DETECT LANDING
+    // UPDATE: FLOAT + ROTATE + BILLBOARD
     // ============================================
 
-    private void OnCollisionEnter(Collision collision)
+    private void Update()
     {
-        if (!isGrounded)
-        {
-            isGrounded = true;
-            basePosition = transform.position;
+        if (isPickedUp || visualObj == null) return;
 
-            if (rb != null)
-            {
-                rb.isKinematic = true;
-            }
+        // Float up/down at ground position
+        Vector3 pos = groundPosition;
+        pos.y += Mathf.Sin(Time.time * floatSpeed) * floatAmplitude;
+        transform.position = pos;
+
+        // Rotate slowly
+        visualObj.transform.Rotate(Vector3.up, rotateSpeed * Time.deltaTime, Space.World);
+
+        // Billboard: sprite faces camera
+        if (spriteRenderer != null && Camera.main != null)
+        {
+            visualObj.transform.LookAt(Camera.main.transform);
+            visualObj.transform.Rotate(0f, 180f, 0f);
         }
     }
 
     // ============================================
-    // PICKUP LOGIC
+    // PICKUP ON TRIGGER
     // ============================================
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isPickedUp) return;
-        if (item == null) return;
-        if (Time.time - spawnTime < pickupDelay) return;
-        if (!other.CompareTag(playerTag)) return;
-
-        TryPickup(other.gameObject);
+        AttemptPickup(other);
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (isPickedUp) return;
-        if (item == null) return;
+        AttemptPickup(other);
+    }
+
+    private void AttemptPickup(Collider other)
+    {
+        if (isPickedUp || item == null) return;
         if (Time.time - spawnTime < pickupDelay) return;
         if (!other.CompareTag(playerTag)) return;
 
-        TryPickup(other.gameObject);
-    }
-
-    private void TryPickup(GameObject player)
-    {
-        // Find InventoryManager
-        InventoryManager inventory = player.GetComponent<InventoryManager>();
-
+        InventoryManager inventory = other.GetComponent<InventoryManager>();
         if (inventory == null)
-        {
-            inventory = player.GetComponentInParent<InventoryManager>();
-        }
-
+            inventory = other.GetComponentInParent<InventoryManager>();
         if (inventory == null)
-        {
             inventory = Object.FindAnyObjectByType<InventoryManager>();
-        }
-
         if (inventory == null)
         {
-            Debug.LogError("[DroppedItemWorld] Cannot find InventoryManager!");
+            Debug.LogError("[DroppedItemWorld] InventoryManager not found!");
             return;
         }
 
-        // Try to add to inventory
         bool success = inventory.AddItem(item, quantity);
 
         if (success)
         {
-            Debug.Log($"[DroppedItemWorld] Player picked up {quantity}x {item.itemName}");
-
             isPickedUp = true;
-            inventory.ShowMessage($"Picked up {quantity}x {item.itemName}");
+            inventory.ShowMessage("+" + quantity + " " + item.itemName);
             Destroy(gameObject);
         }
         else
         {
-            Debug.LogWarning($"[DroppedItemWorld] Inventory full! Cannot pick up {item.itemName}");
             inventory.ShowMessage("Inventory full!");
         }
     }
-
-    // ============================================
-    // PUBLIC GETTERS
-    // ============================================
 
     public ItemObject GetItem() => item;
     public int GetQuantity() => quantity;

@@ -96337,11 +96337,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootTable: {fileID: 11400000, guid: 08c96d39314ecee48a8cd8dc6f1cc110, type: 2}
-  droppedItemPrefab: {fileID: 633812134335564413, guid: 722c9261ffb708c44840173282e1a770, type: 3}
+  droppedItemPrefab: {fileID: 2849199694717479921, guid: 2110ff258fcd4b540aa72a27396bdfc9, type: 3}
   dropRadius: 1.5
-  dropHeightOffset: 0.5
-  launchForce: 3
-  spreadForce: 1.5
+  dropHeightAboveGround: 0.3
 --- !u!1001 &916950982
 PrefabInstance:
   m_ObjectHideFlags: 0
