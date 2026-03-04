@@ -3,7 +3,7 @@ using System;
 
 /// <summary>
 /// Manages player stats, leveling, and equipment bonuses
-/// Attach to Player GameObject
+/// UPDATED: Added equipmentAttackRangeBonus
 /// </summary>
 public class PlayerStats : MonoBehaviour
 {
@@ -21,6 +21,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float equipmentSpeedBonus = 0f;
     [SerializeField] private float equipmentCritRateBonus = 0f;
     [SerializeField] private float equipmentCritDamageBonus = 0f;
+    [SerializeField] private float equipmentAttackRangeBonus = 0f; // <-- NEW
 
     [Header("Experience Manager")]
     [SerializeField] private ExperienceManager experienceManager;
@@ -52,6 +53,10 @@ public class PlayerStats : MonoBehaviour
         OnHealthChanged?.Invoke(currentHP, GetMaxHP());
     }
 
+    // ============================================
+    // STAT GETTERS
+    // ============================================
+
     public float GetMaxHP()
     {
         return config.GetMaxHPForLevel(currentLevel);
@@ -82,6 +87,19 @@ public class PlayerStats : MonoBehaviour
         return config.GetCritDamageForLevel(currentLevel) + equipmentCritDamageBonus;
     }
 
+    /// <summary>
+    /// Get attack range bonus from equipment.
+    /// PlayerAttack uses: baseRange + this value = final range
+    /// </summary>
+    public float GetAttackRangeBonus() 
+    {
+        return equipmentAttackRangeBonus;
+    }
+
+    // ============================================
+    // COMBAT
+    // ============================================
+
     public float CalculateDamage()
     {
         float baseDamage = GetTotalDamage();
@@ -90,7 +108,7 @@ public class PlayerStats : MonoBehaviour
         {
             float critMultiplier = GetTotalCritDamage() / 100f;
             float critDamage = baseDamage * critMultiplier;
-            Debug.Log($"[PlayerStats] CRITICAL HIT! {baseDamage:F1} × {critMultiplier:F2} = {critDamage:F1}");
+            Debug.Log($"[PlayerStats] CRITICAL HIT! {baseDamage:F1} x {critMultiplier:F2} = {critDamage:F1}");
             return critDamage;
         }
 
@@ -186,10 +204,6 @@ public class PlayerStats : MonoBehaviour
         OnExpChanged?.Invoke(currentExp, config.GetExpForLevel(currentLevel));
     }
 
-    /// <summary>
-    /// Sync level from ExperienceManager
-    /// Called by ExperienceManager when player levels up
-    /// </summary>
     public void SyncLevel(int newLevel)
     {
         Debug.Log($"[PlayerStats] SyncLevel called! Current: {currentLevel}, New: {newLevel}");
@@ -203,50 +217,52 @@ public class PlayerStats : MonoBehaviour
         int oldLevel = currentLevel;
         currentLevel = newLevel;
 
-        // Heal to full on level up
         float oldMaxHP = config.GetMaxHPForLevel(oldLevel);
         float newMaxHP = GetMaxHP();
         currentHP = newMaxHP;
 
-        Debug.Log($"[PlayerStats] ✅ Synced to level {currentLevel}");
-        Debug.Log($"  - Max HP: {oldMaxHP:F1} → {newMaxHP:F1}");
+        Debug.Log($"[PlayerStats] Synced to level {currentLevel}");
+        Debug.Log($"  - Max HP: {oldMaxHP:F1} -> {newMaxHP:F1}");
         Debug.Log($"  - Damage: {GetTotalDamage():F1}");
         Debug.Log($"  - Defense: {GetTotalDefense():F1}");
         Debug.Log($"  - Speed: {GetTotalSpeed():F1}");
         Debug.Log($"  - Crit Rate: {GetTotalCritRate():F1}%");
 
-        // Fire events
         OnLevelUp?.Invoke(currentLevel);
         OnStatsChanged?.Invoke();
         OnHealthChanged?.Invoke(currentHP, GetMaxHP());
     }
 
     // ============================================
-    // EQUIPMENT BONUSES
+    // EQUIPMENT BONUSES (UPDATED: added attackRange param)
     // ============================================
 
-    public void AddEquipmentBonus(float damage = 0, float defense = 0, float speed = 0, float critRate = 0, float critDamage = 0)
+    public void AddEquipmentBonus(float damage = 0, float defense = 0, float speed = 0,
+        float critRate = 0, float critDamage = 0, float attackRange = 0)
     {
         equipmentDamageBonus += damage;
         equipmentDefenseBonus += defense;
         equipmentSpeedBonus += speed;
         equipmentCritRateBonus += critRate;
         equipmentCritDamageBonus += critDamage;
+        equipmentAttackRangeBonus += attackRange; // <-- NEW
 
-        Debug.Log($"[PlayerStats] Equipment bonus added. Total damage: {GetTotalDamage():F1}");
+        Debug.Log($"[PlayerStats] Equipment bonus added. Damage: {GetTotalDamage():F1}, Range bonus: +{equipmentAttackRangeBonus:F1}");
 
         OnStatsChanged?.Invoke();
     }
 
-    public void RemoveEquipmentBonus(float damage = 0, float defense = 0, float speed = 0, float critRate = 0, float critDamage = 0)
+    public void RemoveEquipmentBonus(float damage = 0, float defense = 0, float speed = 0,
+        float critRate = 0, float critDamage = 0, float attackRange = 0)
     {
         equipmentDamageBonus -= damage;
         equipmentDefenseBonus -= defense;
         equipmentSpeedBonus -= speed;
         equipmentCritRateBonus -= critRate;
         equipmentCritDamageBonus -= critDamage;
+        equipmentAttackRangeBonus -= attackRange; // <-- NEW
 
-        Debug.Log($"[PlayerStats] Equipment bonus removed. Total damage: {GetTotalDamage():F1}");
+        Debug.Log($"[PlayerStats] Equipment bonus removed. Damage: {GetTotalDamage():F1}, Range bonus: +{equipmentAttackRangeBonus:F1}");
 
         OnStatsChanged?.Invoke();
     }
@@ -258,6 +274,7 @@ public class PlayerStats : MonoBehaviour
         equipmentSpeedBonus = 0;
         equipmentCritRateBonus = 0;
         equipmentCritDamageBonus = 0;
+        equipmentAttackRangeBonus = 0; // <-- NEW
 
         Debug.Log("[PlayerStats] All equipment bonuses reset");
 

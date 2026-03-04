@@ -1,12 +1,20 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// UPDATED: Attack range is now dynamic based on equipment.
+/// Base range + weapon's attackRangeBonus = final range.
+/// Circle visual auto-scales to match.
+/// </summary>
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack Settings")]
-    public float attackRange = 3f;
+    [Tooltip("Base attack range without any weapon")]
+    public float baseAttackRange = 2f;
+
     public float attackSpeed = 1f;
 
     [Header("Range Visual")]
+    [Tooltip("Circle projector/sprite that shows attack range on ground")]
     public GameObject attackRangeCircle;
 
     [Header("Spawn Point")]
@@ -16,6 +24,9 @@ public class PlayerAttack : MonoBehaviour
     private Animator animator;
     private PlayerStats playerStats;
 
+    // Cached current range (updated when stats change)
+    private float currentAttackRange;
+
     void Awake()
     {
         animator = GetComponentInChildren<Animator>();
@@ -23,7 +34,7 @@ public class PlayerAttack : MonoBehaviour
 
         if (playerStats == null)
         {
-            Debug.LogError("[PlayerAttack] PlayerStats component not found! Add it to Player GameObject.");
+            Debug.LogError("[PlayerAttack] PlayerStats component not found!");
         }
     }
 
@@ -32,6 +43,23 @@ public class PlayerAttack : MonoBehaviour
         if (spawnPoint != null)
         {
             transform.position = spawnPoint.position;
+        }
+
+        // Listen for stat changes (equipment equip/unequip)
+        if (playerStats != null)
+        {
+            playerStats.OnStatsChanged += UpdateAttackRange;
+        }
+
+        // Initial range calculation
+        UpdateAttackRange();
+    }
+
+    void OnDestroy()
+    {
+        if (playerStats != null)
+        {
+            playerStats.OnStatsChanged -= UpdateAttackRange;
         }
     }
 
@@ -47,6 +75,48 @@ public class PlayerAttack : MonoBehaviour
             OnAttackRelease();
         }
     }
+
+    // ============================================
+    // DYNAMIC ATTACK RANGE
+    // ============================================
+
+    /// <summary>
+    /// Recalculate attack range from base + equipment bonus.
+    /// Called automatically when equipment changes.
+    /// </summary>
+    private void UpdateAttackRange()
+    {
+        float rangeBonus = 0f;
+
+        if (playerStats != null)
+        {
+            rangeBonus = playerStats.GetAttackRangeBonus();
+        }
+
+        currentAttackRange = baseAttackRange + rangeBonus;
+
+        // Scale the circle visual to match new range
+        UpdateRangeCircleScale();
+
+        Debug.Log($"[PlayerAttack] Range updated: {baseAttackRange} + {rangeBonus} = {currentAttackRange}");
+    }
+
+    /// <summary>
+    /// Scale the attack range circle to match currentAttackRange.
+    /// Works with a circle sprite/projector where scale 1 = 1 unit diameter.
+    /// </summary>
+    private void UpdateRangeCircleScale()
+    {
+        if (attackRangeCircle == null) return;
+
+        // Diameter = range * 2, so scale = diameter
+        float diameter = currentAttackRange * 2f;
+        attackRangeCircle.transform.localScale = new Vector3(diameter, diameter, diameter);
+    }
+
+    // ============================================
+    // ATTACK
+    // ============================================
 
     public void OnAttackHold()
     {
@@ -66,18 +136,16 @@ public class PlayerAttack : MonoBehaviour
 
     void DoAttack()
     {
-        // Trigger animation
         if (animator != null)
         {
             animator.ResetTrigger("Attack");
             animator.SetTrigger("Attack");
         }
 
-        // Get damage from PlayerStats
         float damage = GetPlayerDamage();
 
-        // Detect enemies in range
-        Collider[] hits = Physics.OverlapSphere(transform.position, attackRange);
+        // Use dynamic range for overlap sphere
+        Collider[] hits = Physics.OverlapSphere(transform.position, currentAttackRange);
         int enemiesHit = 0;
 
         foreach (Collider hit in hits)
@@ -92,12 +160,9 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        Debug.Log($"[PlayerAttack] Slash! Hit {enemiesHit} enemies");
+        Debug.Log($"[PlayerAttack] Slash! Range: {currentAttackRange:F1}, Hit {enemiesHit} enemies");
     }
 
-    /// <summary>
-    /// Get damage from PlayerStats (with crit calculation)
-    /// </summary>
     private float GetPlayerDamage()
     {
         if (playerStats != null)
@@ -107,7 +172,7 @@ public class PlayerAttack : MonoBehaviour
         else
         {
             Debug.LogWarning("[PlayerAttack] PlayerStats not found! Using default damage.");
-            return 20f; // Fallback damage
+            return 20f;
         }
     }
 
@@ -119,9 +184,22 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
+    // ============================================
+    // PUBLIC GETTER
+    // ============================================
+
+    /// <summary>
+    /// Get current final attack range (base + equipment)
+    /// </summary>
+    public float GetCurrentAttackRange()
+    {
+        return currentAttackRange;
+    }
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(transform.position, attackRange);
+        float range = Application.isPlaying ? currentAttackRange : baseAttackRange;
+        Gizmos.DrawWireSphere(transform.position, range);
     }
 }

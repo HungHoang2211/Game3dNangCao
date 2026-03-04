@@ -51,6 +51,8 @@ public class ItemObject : ScriptableObject
     [Tooltip("Crit Rate bonus (%)")]
     public float critRateBonus = 0f;
 
+    [Tooltip("Attack range bonus (for weapons)")]
+    public float attackRangeBonus = 0f;
 
     [Header("Upgrade System (for Equipment)")]
     [Tooltip("Current upgrade level (0-10)")]
@@ -211,7 +213,10 @@ public class ItemObject : ScriptableObject
     {
         return critRateBonus * (1f + (upgradeLevel * 0.1f));
     }
-
+    public float GetUpgradedAttackRange()
+    {
+        return attackRangeBonus * (1f + (upgradeLevel * 0.1f));
+    }
     /// <summary>
     /// Upgrade item to next level
     /// </summary>
