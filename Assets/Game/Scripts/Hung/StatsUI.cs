@@ -1,10 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
 /// <summary>
 /// UI Manager for displaying player stats
-/// Subscribes to PlayerStats events for real-time updates
+/// Uses OnEnable/OnDisable for safe toggle with Inventory panel
 /// </summary>
 public class StatsUI : MonoBehaviour
 {
@@ -40,88 +40,71 @@ public class StatsUI : MonoBehaviour
         }
     }
 
-    private void Start()
+    // Subscribe mỗi lần panel được bật
+    private void OnEnable()
     {
-        if (playerStats != null)
-        {
-            // Subscribe to events
-            playerStats.OnStatsChanged += UpdateAllStats;
-            playerStats.OnLevelUp += OnLevelUp;
-            playerStats.OnExpChanged += UpdateExpBar;
-            playerStats.OnHealthChanged += UpdateHealth;
+        if (playerStats == null) return;
 
-            // Initial update
-            UpdateAllStats();
-            UpdateExpBar(playerStats.GetCurrentExp(), playerStats.GetExpToNextLevel());
-        }
+        playerStats.OnStatsChanged += UpdateAllStats;
+        playerStats.OnLevelUp += OnLevelUp;
+        playerStats.OnExpChanged += UpdateExpBar;
+        playerStats.OnHealthChanged += UpdateHealth;
+
+        // Cập nhật ngay khi mở để đồng bộ data mới nhất
+        UpdateAllStats();
+        UpdateExpBar(playerStats.GetCurrentExp(), playerStats.GetExpToNextLevel());
     }
 
-    private void OnDestroy()
+    // Unsubscribe mỗi lần panel bị tắt
+    private void OnDisable()
     {
-        if (playerStats != null)
-        {
-            // Unsubscribe from events
-            playerStats.OnStatsChanged -= UpdateAllStats;
-            playerStats.OnLevelUp -= OnLevelUp;
-            playerStats.OnExpChanged -= UpdateExpBar;
-            playerStats.OnHealthChanged -= UpdateHealth;
-        }
+        if (playerStats == null) return;
+
+        playerStats.OnStatsChanged -= UpdateAllStats;
+        playerStats.OnLevelUp -= OnLevelUp;
+        playerStats.OnExpChanged -= UpdateExpBar;
+        playerStats.OnHealthChanged -= UpdateHealth;
     }
 
     // ============================================
     // UPDATE METHODS
     // ============================================
 
-    /// <summary>
-    /// Update all stats display
-    /// </summary>
     private void UpdateAllStats()
     {
         if (playerStats == null) return;
 
-        // Level
         if (levelText != null)
         {
             levelText.text = $"LEVEL {playerStats.GetCurrentLevel()}";
         }
 
-        // HP
         if (hpText != null)
         {
             hpText.text = $"{playerStats.GetCurrentHP():F0} / {playerStats.GetMaxHP():F0}";
         }
 
-        // Damage
         if (damageText != null)
         {
             damageText.text = $"{playerStats.GetTotalDamage():F1}";
         }
 
-        // Defense
         if (defenseText != null)
         {
             defenseText.text = $"{playerStats.GetTotalDefense():F1}";
         }
 
-        // Speed
         if (speedText != null)
         {
             speedText.text = $"{playerStats.GetTotalSpeed():F1}";
         }
 
-        // Crit Rate
         if (critRateText != null)
         {
             critRateText.text = $"{playerStats.GetTotalCritRate():F1}%";
         }
-
-
-        Debug.Log("[StatsUI] All stats updated");
     }
 
-    /// <summary>
-    /// Update EXP bar
-    /// </summary>
     private void UpdateExpBar(int currentExp, int expToNextLevel)
     {
         if (expBar != null)
@@ -134,13 +117,8 @@ public class StatsUI : MonoBehaviour
         {
             expText.text = $"{currentExp} / {expToNextLevel} EXP";
         }
-
-        Debug.Log($"[StatsUI] EXP updated: {currentExp}/{expToNextLevel}");
     }
 
-    /// <summary>
-    /// Update health display
-    /// </summary>
     private void UpdateHealth(float currentHP, float maxHP)
     {
         if (hpText != null)
@@ -149,26 +127,17 @@ public class StatsUI : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Handle level up event
-    /// </summary>
     private void OnLevelUp(int newLevel)
     {
-        Debug.Log($"[StatsUI] Level up to {newLevel}!");
-
-        // Update level text
         if (levelText != null)
         {
             levelText.text = $"LEVEL {newLevel}";
         }
 
-        // Play level up effect
         if (levelUpEffect != null)
         {
             GameObject effect = Instantiate(levelUpEffect, transform);
             Destroy(effect, 2f);
         }
-
-        // TODO: Add level up animation/sound
     }
 }
