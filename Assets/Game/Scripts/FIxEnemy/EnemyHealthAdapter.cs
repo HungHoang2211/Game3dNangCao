@@ -5,6 +5,7 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
 {
     private EnemyHealth enemyHealth;
     private EnemyLootDrop lootDrop;
+    private EnemyReward enemyReward;
     void Awake()
     {
         enemyHealth = GetComponent<EnemyHealth>();
@@ -21,6 +22,7 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
     private void Start()
     {
         lootDrop = GetComponent<EnemyLootDrop>();
+        enemyReward = GetComponent<EnemyReward>();
     }
     // ============================================
     // FLOAT DAMAGE (NEW)
@@ -74,6 +76,7 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
             Debug.Log($"[EnemyHealthAdapter] Force killing {gameObject.name}");
             enemyHealth.TakeDamage(enemyHealth.currentHp);
         }
+        if (enemyReward != null) enemyReward.GiveReward();
         if (lootDrop != null) lootDrop.DropLoot();
     }
 }

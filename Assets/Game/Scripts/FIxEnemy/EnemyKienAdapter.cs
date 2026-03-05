@@ -12,9 +12,11 @@ public class EnemyKienAdapter : MonoBehaviour, IEnemy
     private Animator animator;
     private NavMeshAgent agent;
     private EnemyLootDrop lootDrop;
+    private EnemyReward enemyReward;
     void Start()
     {
         lootDrop = GetComponent<EnemyLootDrop>();
+        enemyReward = GetComponent<EnemyReward>();
         currentHealth = maxHealth;
 
         animator = GetComponent<Animator>();
@@ -79,7 +81,8 @@ public class EnemyKienAdapter : MonoBehaviour, IEnemy
         {
             agent.enabled = false;
         }
+        if (enemyReward != null) enemyReward.GiveReward();
         if (lootDrop != null) lootDrop.DropLoot();
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 0.5f);
     }
 }

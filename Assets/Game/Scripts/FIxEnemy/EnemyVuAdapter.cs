@@ -13,9 +13,11 @@ public class EnemyVuAdapter : MonoBehaviour, IEnemy
     private NavMeshAgent agent;
     private Animator animator;
     private EnemyLootDrop lootDrop;
+    private EnemyReward enemyReward;
     void Start()
     {
         lootDrop = GetComponent<EnemyLootDrop>();
+        enemyReward = GetComponent<EnemyReward>();
         currentHealth = maxHealth;
 
         enemyAI = GetComponent<EnemyAI>();
@@ -75,7 +77,8 @@ public class EnemyVuAdapter : MonoBehaviour, IEnemy
         if (enemyAI != null) enemyAI.enabled = false;
         if (agent != null) agent.enabled = false;
         if (animator != null) animator.enabled = false;
+        if (enemyReward != null) enemyReward.GiveReward();
         if (lootDrop != null) lootDrop.DropLoot();
-        Destroy(gameObject, 2f);
+        Destroy(gameObject, 0.5f);
     }
 }
