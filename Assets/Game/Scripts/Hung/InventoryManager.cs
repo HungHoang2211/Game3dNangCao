@@ -413,4 +413,6 @@ public class InventoryManager : MonoBehaviour
         Debug.LogWarning($"[InventoryManager] {message}");
         OnInventoryMessage?.Invoke(message);
     }
+
+    public ItemDatabase GetItemDatabase() => itemDatabase;
 }

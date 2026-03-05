@@ -291,4 +291,22 @@ public class PlayerStats : MonoBehaviour
     public float GetCurrentHPPercent() => currentHP / GetMaxHP();
     public int GetExpToNextLevel() => config.GetExpForLevel(currentLevel);
     public bool IsMaxLevel() => currentLevel >= config.maxLevel;
+
+    /// <summary>
+    /// Restore full state from save data. 
+    /// Bypasses SyncLevel check.
+    /// </summary>
+    public void RestoreState(int level, int exp, float hp)
+    {
+        currentLevel = level;
+        currentExp = exp;
+        currentHP = Mathf.Min(hp, GetMaxHP());
+
+        Debug.Log($"[PlayerStats] State restored: Lv{level}, EXP={exp}, HP={hp:F0}/{GetMaxHP():F0}");
+
+        OnLevelUp?.Invoke(currentLevel);
+        OnStatsChanged?.Invoke();
+        OnHealthChanged?.Invoke(currentHP, GetMaxHP());
+        OnExpChanged?.Invoke(currentExp, config.GetExpForLevel(currentLevel));
+    }
 }

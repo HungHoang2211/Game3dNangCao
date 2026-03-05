@@ -116,4 +116,24 @@ public class ExperienceManager : MonoBehaviour
     public int GetCurrentLevel() => currentLevel;
     public int GetTotalExperience() => totalExperience;
     public int GetExpForNextLevel() => nextLevelsExperience - previousLevelsExperience;
+
+    /// <summary>
+    /// Restore state from save data
+    /// </summary>
+    public void RestoreState(int level, int totalExp)
+    {
+        currentLevel = level;
+        totalExperience = totalExp;
+        UpdateLevel();
+        UpdateInterface();
+
+        // Sync PlayerStats
+        if (playerStats != null)
+        {
+            playerStats.SyncLevel(currentLevel);
+        }
+
+        Debug.Log($"[ExperienceManager] State restored: Lv{level}, EXP={totalExp}");
+    }
+
 }
