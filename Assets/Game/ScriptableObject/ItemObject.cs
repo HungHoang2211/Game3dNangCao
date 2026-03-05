@@ -247,4 +247,22 @@ public class ItemObject : ScriptableObject
         }
         return itemName;
     }
+
+    /// Create runtime clone (independent upgrade level)
+    public ItemObject Clone()
+    {
+        ItemObject clone = Instantiate(this);
+        clone.name = this.name; // remove "(Clone)" suffix
+        return clone;
+    }
+
+    /// Check if this is equipment (can be upgraded independently)
+    public bool IsEquipment()
+    {
+        return itemType == ItemType.Weapon ||
+               itemType == ItemType.Armor ||
+               itemType == ItemType.Accessory;
+    }
+
+
 }

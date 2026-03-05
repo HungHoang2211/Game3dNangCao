@@ -155,7 +155,6 @@ public class InventoryManager : MonoBehaviour
 
             if (emptySlotIndex == -1)
             {
-                // No empty slots
                 return quantity;
             }
 
@@ -168,8 +167,16 @@ public class InventoryManager : MonoBehaviour
             }
             else
             {
-                // Non-stackable items take 1 slot each
-                slots[emptySlotIndex].item = item;
+                // Equipment: clone so each copy has independent upgrade level
+                if (item.IsEquipment())
+                {
+                    slots[emptySlotIndex].item = item.Clone();
+                }
+                else
+                {
+                    slots[emptySlotIndex].item = item;
+                }
+
                 slots[emptySlotIndex].quantity = 1;
                 quantity--;
             }
