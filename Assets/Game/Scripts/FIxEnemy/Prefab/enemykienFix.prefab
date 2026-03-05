@@ -1256,6 +1256,8 @@ GameObject:
   - component: {fileID: 1655589851976725318}
   - component: {fileID: 6907583999905076866}
   - component: {fileID: 1302527268497033953}
+  - component: {fileID: -8155758583321561834}
+  - component: {fileID: 8959066979548043808}
   m_Layer: 0
   m_Name: enemykienFix
   m_TagString: Enemy
@@ -1387,6 +1389,42 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHealth: 80
+--- !u!114 &-8155758583321561834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3682466346997056394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a111a3a5d0aa2f4fa6b6e46806cd369, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTag: Player
+  pickupRadius: 2
+  pickupDelay: 0.3
+  lifetime: 120
+  floatAmplitude: 0.1
+  floatSpeed: 3
+  rotateSpeed: 120
+  customVisual: {fileID: 1029750363295070471, guid: a2c94cead11563349bb47034192b5457, type: 3}
+--- !u!114 &8959066979548043808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3682466346997056394}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95143cd9022791940b7a3be9b4a53a08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootTable: {fileID: 11400000, guid: 08c96d39314ecee48a8cd8dc6f1cc110, type: 2}
+  droppedItemPrefab: {fileID: 0}
+  dropRadius: 1.5
+  dropHeightAboveGround: 0.3
 --- !u!1 &3687320072347809495
 GameObject:
   m_ObjectHideFlags: 0
