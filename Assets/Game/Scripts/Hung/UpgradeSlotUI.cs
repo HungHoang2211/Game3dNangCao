@@ -17,7 +17,6 @@ public class UpgradeSlotUI : MonoBehaviour
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private Button upgradeButton;
     [SerializeField] private TextMeshProUGUI buttonText;
-    [SerializeField] private GameObject emptyState; // Hiện khi không có item
 
     [Header("Colors")]
     [SerializeField] private Color canUpgradeColor = new Color(0.2f, 0.8f, 0.2f);
@@ -51,11 +50,8 @@ public class UpgradeSlotUI : MonoBehaviour
         // Nếu không có item equipped
         if (item == null)
         {
-            ShowEmptyState();
             return;
         }
-
-        HideEmptyState();
 
         // Icon
         if (itemIcon != null)
@@ -162,31 +158,6 @@ public class UpgradeSlotUI : MonoBehaviour
             }
         }
     }
-
-    private void ShowEmptyState()
-    {
-        if (emptyState != null) emptyState.SetActive(true);
-        if (itemIcon != null) itemIcon.gameObject.SetActive(false);
-        if (itemNameText != null) itemNameText.gameObject.SetActive(false);
-        if (currentStatsText != null) currentStatsText.gameObject.SetActive(false);
-        if (upgradedStatsText != null) upgradedStatsText.gameObject.SetActive(false);
-        if (costText != null) costText.gameObject.SetActive(false);
-        if (levelText != null) levelText.gameObject.SetActive(false);
-        if (upgradeButton != null) upgradeButton.gameObject.SetActive(false);
-    }
-
-    private void HideEmptyState()
-    {
-        if (emptyState != null) emptyState.SetActive(false);
-        if (itemIcon != null) itemIcon.gameObject.SetActive(true);
-        if (itemNameText != null) itemNameText.gameObject.SetActive(true);
-        if (currentStatsText != null) currentStatsText.gameObject.SetActive(true);
-        if (upgradedStatsText != null) upgradedStatsText.gameObject.SetActive(true);
-        if (costText != null) costText.gameObject.SetActive(true);
-        if (levelText != null) levelText.gameObject.SetActive(true);
-        if (upgradeButton != null) upgradeButton.gameObject.SetActive(true);
-    }
-
     private void OnUpgradeClicked()
     {
         if (shopManager != null && item != null)

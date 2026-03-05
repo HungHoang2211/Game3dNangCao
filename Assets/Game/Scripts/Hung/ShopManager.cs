@@ -3,10 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
-/// <summary>
-/// Quản lý shop UI và giao dịch mua/bán
-/// VERSION: WITH DEBUG LOGS
-/// </summary>
 public class ShopManager : MonoBehaviour
 {
     [Header("References")]
@@ -39,6 +35,10 @@ public class ShopManager : MonoBehaviour
     [Header("Items To Sell (Shop Inventory)")]
     [SerializeField] private List<ItemObject> shopItems = new List<ItemObject>();
 
+    [Header("Other Canvases to Hide")]
+    [Tooltip("Canvas(es) to hide when shop is open (e.g., HUD Canvas)")]
+    [SerializeField] private GameObject[] canvasesToHide;
+
     private List<ShopItemSlot> buySlots = new List<ShopItemSlot>();
     private List<ShopItemSlot> sellSlots = new List<ShopItemSlot>();
 
@@ -62,22 +62,18 @@ public class ShopManager : MonoBehaviour
         if (inventory == null)
         {
             inventory = FindAnyObjectByType<InventoryManager>();
-            Debug.Log($"[ShopManager] Auto-found InventoryManager: {(inventory != null ? "OK" : "FAILED")}");
         }
 
         if (equipment == null)
         {
             equipment = FindAnyObjectByType<EquipmentManager>();
-            Debug.Log($"[ShopManager] Auto-found EquipmentManager: {(equipment != null ? "OK" : "FAILED")}");
+
         }
     }
 
     private void Start()
     {
-        Debug.Log("[ShopManager] Start - Setting up...");
 
-        // Validate references
-        ValidateReferences();
 
         // Setup tab buttons
         if (buyTabButton != null)
@@ -104,7 +100,6 @@ public class ShopManager : MonoBehaviour
         if (CurrencyManager.Instance != null)
         {
             CurrencyManager.Instance.OnGoldChanged += OnGoldChanged;
-            Debug.Log("[ShopManager] ✅ Subscribed to CurrencyManager events");
         }
         else
         {
@@ -113,36 +108,6 @@ public class ShopManager : MonoBehaviour
 
         // Đóng shop ban đầu
         CloseShop();
-
-        Debug.Log("[ShopManager] ✅ Initialization complete");
-    }
-
-    private void ValidateReferences()
-    {
-        Debug.Log("[ShopManager] === VALIDATING REFERENCES ===");
-        Debug.Log($"shopPanel: {(shopPanel != null ? "OK" : "NULL")}");
-        Debug.Log($"buyContent: {(buyContent != null ? "OK" : "NULL")}");
-        Debug.Log($"sellContent: {(sellContent != null ? "OK" : "NULL")}");
-        Debug.Log($"upgradeContent: {(upgradeContent != null ? "OK" : "NULL")}");
-        Debug.Log($"buyGridContainer: {(buyGridContainer != null ? "OK" : "NULL")}");
-        Debug.Log($"sellGridContainer: {(sellGridContainer != null ? "OK" : "NULL")}");
-        Debug.Log($"shopItemSlotPrefab: {(shopItemSlotPrefab != null ? "OK" : "NULL")}");
-        Debug.Log($"shopItems count: {shopItems.Count}");
-
-        if (shopItemSlotPrefab == null)
-        {
-            Debug.LogError("[ShopManager] ❌ CRITICAL: shopItemSlotPrefab is NULL! Assign it in Inspector!");
-        }
-
-        if (buyGridContainer == null)
-        {
-            Debug.LogError("[ShopManager] ❌ CRITICAL: buyGridContainer is NULL! Assign it in Inspector!");
-        }
-
-        if (shopItems.Count == 0)
-        {
-            Debug.LogWarning("[ShopManager] ⚠️ shopItems list is EMPTY! Add items in Inspector!");
-        }
     }
 
     private void OnDestroy()
@@ -153,25 +118,21 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    // ============================================
-    // MỞ / ĐÓNG SHOP
-    // ============================================
-
     public void OpenShop()
     {
-        Debug.Log("[ShopManager] OpenShop called");
+        HideOtherCanvases();
 
         if (shopPanel != null)
         {
             shopPanel.SetActive(true);
             SwitchTab(ShopTab.Buy);
             UpdateGoldDisplay();
+            Time.timeScale = 0f;
 
-            Debug.Log("[ShopManager] ✅ Shop opened");
         }
         else
         {
-            Debug.LogError("[ShopManager] ❌ Cannot open shop - shopPanel is NULL!");
+            Debug.LogError("[ShopManager] Cannot open shop - shopPanel is NULL!");
         }
     }
 
@@ -180,26 +141,20 @@ public class ShopManager : MonoBehaviour
         if (shopPanel != null)
         {
             shopPanel.SetActive(false);
-            Debug.Log("[ShopManager] Shop closed");
+            ShowOtherCanvases();
+            Time.timeScale = 1f;
         }
     }
-
-    // ============================================
-    // CHUYỂN TAB
-    // ============================================
-
     private void SwitchTab(ShopTab tab)
     {
         Debug.Log($"[ShopManager] SwitchTab to: {tab}");
 
         currentTab = tab;
 
-        // Ẩn tất cả content
         if (buyContent != null) buyContent.SetActive(false);
         if (sellContent != null) sellContent.SetActive(false);
         if (upgradeContent != null) upgradeContent.SetActive(false);
 
-        // Hiện content được chọn
         switch (tab)
         {
             case ShopTab.Buy:
@@ -219,10 +174,6 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    // ============================================
-    // POPULATE GRIDS - WITH DEBUG
-    // ============================================
-
     private void PopulateBuyGrid()
     {
         Debug.Log($"[ShopManager] === PopulateBuyGrid START ===");
@@ -230,7 +181,6 @@ public class ShopManager : MonoBehaviour
         Debug.Log($"[ShopManager] buyGridContainer: {(buyGridContainer != null ? "OK" : "NULL")}");
         Debug.Log($"[ShopManager] shopItemSlotPrefab: {(shopItemSlotPrefab != null ? "OK" : "NULL")}");
 
-        // Xóa slots cũ
         foreach (var slot in buySlots)
         {
             if (slot != null) Destroy(slot.gameObject);
@@ -450,7 +400,7 @@ public class ShopManager : MonoBehaviour
             // Re-equip with new stats
             equipment.EquipItem(item);
 
-            Debug.Log($"[ShopManager] ✅ Nâng cấp {item.itemName} lên +{item.upgradeLevel}!");
+            Debug.Log($"[ShopManager] Nâng cấp {item.itemName} lên +{item.upgradeLevel}!");
             Debug.Log($"  Old DMG: {oldDamage:F0} → New DMG: {item.GetUpgradedDamage():F0}");
 
             // Refresh upgrade grid
@@ -542,7 +492,7 @@ public class ShopManager : MonoBehaviour
         if (shopGoldText != null && CurrencyManager.Instance != null)
         {
             int gold = CurrencyManager.Instance.GetGold();
-            shopGoldText.text = $"Vàng của bạn: {gold:N0}";
+            shopGoldText.text = $"{gold:N0}";
         }
     }
 
@@ -557,5 +507,26 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    
+    private void HideOtherCanvases()
+    {
+        if (canvasesToHide == null) return;
+
+        foreach (GameObject canvas in canvasesToHide)
+        {
+            if (canvas != null)
+                canvas.SetActive(false);
+        }
+    }
+
+    private void ShowOtherCanvases()
+    {
+        if (canvasesToHide == null) return;
+
+        foreach (GameObject canvas in canvasesToHide)
+        {
+            if (canvas != null)
+                canvas.SetActive(true);
+        }
+    }
+
 }

@@ -248,9 +248,9 @@ MonoBehaviour:
     m_SelectOnRight: {fileID: 0}
   m_Transition: 1
   m_Colors:
-    m_NormalColor: {r: 0.23529412, g: 0.5882353, b: 0.23529412, a: 1}
-    m_HighlightedColor: {r: 0.3137255, g: 0.7058824, b: 0.3137255, a: 1}
-    m_PressedColor: {r: 0.15686275, g: 0.47058824, b: 0.15686275, a: 1}
+    m_NormalColor: {r: 0.23529412, g: 0.3674712, b: 0.5882353, a: 1}
+    m_HighlightedColor: {r: 0.31372553, g: 0.44490266, b: 0.7058824, a: 1}
+    m_PressedColor: {r: 0.15686277, g: 0.23140374, b: 0.47058824, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
@@ -345,8 +345,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278200831
-  m_fontColor: {r: 1, g: 0.16006003, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -601,7 +601,7 @@ MonoBehaviour:
   priceText: {fileID: 5963767238033083006}
   actionButton: {fileID: 5342033749750135538}
   buttonText: {fileID: 7069901089964509666}
-  buyColor: {r: 0.2, g: 0.8, b: 0.2, a: 1}
+  buyColor: {r: 0.23529412, g: 0.36862746, b: 0.5882353, a: 1}
   sellColor: {r: 0.8, g: 0.6, b: 0.2, a: 1}
   cannotAffordColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
 --- !u!1 &8527765712831089475

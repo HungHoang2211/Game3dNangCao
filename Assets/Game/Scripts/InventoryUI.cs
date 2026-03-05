@@ -3,10 +3,6 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections.Generic;
 
-/// <summary>
-/// Main UI controller for inventory system
-/// FIXED: Proper swap logic + Equipment swap when full
-/// </summary>
 public class InventoryUI : MonoBehaviour
 {
     [Header("References")]
@@ -564,6 +560,7 @@ public class InventoryUI : MonoBehaviour
     {
         Debug.Log("[InventoryUI] Opening inventory");
 
+        Time.timeScale = 0f;
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(true);
@@ -584,7 +581,7 @@ public class InventoryUI : MonoBehaviour
     public void CloseInventory()
     {
         Debug.Log("[InventoryUI] Closing inventory");
-
+        
         if (inventoryPanel != null)
         {
             inventoryPanel.SetActive(false);
@@ -598,7 +595,7 @@ public class InventoryUI : MonoBehaviour
         isInventoryOpen = false;
 
         ShowOtherCanvases();
-
+        Time.timeScale = 1f;
         HideTooltip();
     }
 
