@@ -496,6 +496,8 @@ GameObject:
   - component: {fileID: 8407218287737247401}
   - component: {fileID: 5098066874706382183}
   - component: {fileID: 4843586229872143506}
+  - component: {fileID: -4193854012534083360}
+  - component: {fileID: 2781844610485291746}
   m_Layer: 0
   m_Name: enemyVuFIx
   m_TagString: Enemy
@@ -650,6 +652,39 @@ CapsuleCollider:
   m_Height: 1
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-4193854012534083360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2436070689662671842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 95143cd9022791940b7a3be9b4a53a08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lootTable: {fileID: 11400000, guid: 08c96d39314ecee48a8cd8dc6f1cc110, type: 2}
+  droppedItemPrefab: {fileID: 2849199694717479921, guid: 2110ff258fcd4b540aa72a27396bdfc9, type: 3}
+  dropRadius: 1.5
+  dropHeightAboveGround: 0.3
+--- !u!114 &2781844610485291746
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2436070689662671842}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f4e959305fc5946b16262fce6d4612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  expReward: 25
+  minGold: 5
+  maxGold: 20
+  goldDropPrefab: {fileID: 1950871307682000, guid: 01348926c7cbb3347a006c37204131c3, type: 3}
+  dropHeightAboveGround: 0.3
 --- !u!1 &2442912868882517101
 GameObject:
   m_ObjectHideFlags: 0

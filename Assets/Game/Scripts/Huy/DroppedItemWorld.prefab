@@ -45,10 +45,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerTag: Player
-  pickupRadius: 1.5
+  pickupRadius: 2
   pickupDelay: 0.8
   lifetime: 120
-  spriteScale: 0.8
-  floatAmplitude: 0.15
-  floatSpeed: 2
+  spriteScale: 0.6
+  floatAmplitude: 1
+  floatSpeed: 3
   rotateSpeed: 60

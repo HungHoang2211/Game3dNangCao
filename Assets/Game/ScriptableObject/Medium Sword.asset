@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f3986201390d404490d7711ab6ac3b6, type: 3}
-  m_Name: Sword 3
+  m_Name: Medium Sword
   m_EditorClassIdentifier: 
   id: 8
   itemName: Medium Sword
@@ -19,13 +19,13 @@ MonoBehaviour:
   itemType: 0
   isStackable: 0
   maxStackSize: 99
-  buyPrice: 0
-  sellPrice: 0
+  buyPrice: 300
+  sellPrice: 100
   damageBonus: 40
   defenseBonus: 0
   speedBonus: 0
   critRateBonus: 30
-  attackRangeBonus: 0
+  attackRangeBonus: 1.6
   upgradeLevel: 0
   maxUpgradeLevel: 10
   upgradeCostPerLevel: 500

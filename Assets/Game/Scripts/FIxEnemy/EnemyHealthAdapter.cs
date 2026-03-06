@@ -32,7 +32,6 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
     {
         if (enemyHealth == null)
         {
-            Debug.LogError($"[EnemyHealthAdapter] Cannot take damage - EnemyHealth is NULL!");
             return;
         }
 
@@ -45,6 +44,8 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
 
         if (IsDead())
         {
+            if (enemyReward != null) enemyReward.GiveReward();
+            if (lootDrop != null) lootDrop.DropLoot();
             Debug.Log($"[EnemyHealthAdapter] {gameObject.name} DIED!");
         }
     }
@@ -76,7 +77,6 @@ public class EnemyHealthAdapter : MonoBehaviour, IEnemy
             Debug.Log($"[EnemyHealthAdapter] Force killing {gameObject.name}");
             enemyHealth.TakeDamage(enemyHealth.currentHp);
         }
-        if (enemyReward != null) enemyReward.GiveReward();
-        if (lootDrop != null) lootDrop.DropLoot();
+       
     }
 }

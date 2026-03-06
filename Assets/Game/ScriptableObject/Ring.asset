@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f3986201390d404490d7711ab6ac3b6, type: 3}
-  m_Name: Dagger
+  m_Name: Ring
   m_EditorClassIdentifier: 
-  id: 7
-  itemName: Dagger
-  icon: {fileID: 21300000, guid: 368f9866734e5444f87b4027ada157ae, type: 3}
+  id: 13
+  itemName: Iron Ring
+  icon: {fileID: -6162265055754030298, guid: 215687feeab0b7445b4a1cd86c82c2e1, type: 3}
   description: 
-  itemType: 0
+  itemType: 2
   isStackable: 0
   maxStackSize: 99
-  buyPrice: 200
-  sellPrice: 50
-  damageBonus: 20
-  defenseBonus: 0
+  buyPrice: 1200
+  sellPrice: 120
+  damageBonus: 10
+  defenseBonus: 10
   speedBonus: 0
-  critRateBonus: 90
-  attackRangeBonus: 0
+  critRateBonus: 1
+  attackRangeBonus: 0.1
   upgradeLevel: 0
   maxUpgradeLevel: 10
-  upgradeCostPerLevel: 40
+  upgradeCostPerLevel: 1000
   upgradeColors:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
@@ -38,4 +38,4 @@ MonoBehaviour:
   - {r: 1, g: 0.5, b: 0, a: 1}
   hpRestore: 0
   usableInCombat: 1
-  equipPrefab: {fileID: 9186979247823193480, guid: 680fdabed0b8f644cbb49421b21e4448, type: 3}
+  equipPrefab: {fileID: 0}

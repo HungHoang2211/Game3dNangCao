@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f3986201390d404490d7711ab6ac3b6, type: 3}
-  m_Name: Sword 2
+  m_Name: Dagger
   m_EditorClassIdentifier: 
-  id: 6
-  itemName: Long sword
-  icon: {fileID: 21300000, guid: d31aa8412a4d374458c912d11686642a, type: 3}
+  id: 7
+  itemName: Dagger
+  icon: {fileID: 21300000, guid: 368f9866734e5444f87b4027ada157ae, type: 3}
   description: 
   itemType: 0
   isStackable: 0
   maxStackSize: 99
-  buyPrice: 300
-  sellPrice: 100
-  damageBonus: 45
+  buyPrice: 200
+  sellPrice: 50
+  damageBonus: 20
   defenseBonus: 0
   speedBonus: 0
-  critRateBonus: 10
-  attackRangeBonus: 1.7
+  critRateBonus: 90
+  attackRangeBonus: 1.2
   upgradeLevel: 0
   maxUpgradeLevel: 10
-  upgradeCostPerLevel: 300
+  upgradeCostPerLevel: 40
   upgradeColors:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
@@ -38,4 +38,4 @@ MonoBehaviour:
   - {r: 1, g: 0.5, b: 0, a: 1}
   hpRestore: 0
   usableInCombat: 1
-  equipPrefab: {fileID: 5731102984063837328, guid: 9fb1d498d2af7d741a49a8010e40c71b, type: 3}
+  equipPrefab: {fileID: 9186979247823193480, guid: 680fdabed0b8f644cbb49421b21e4448, type: 3}

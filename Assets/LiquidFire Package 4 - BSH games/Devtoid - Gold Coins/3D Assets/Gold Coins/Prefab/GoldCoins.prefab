@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4521874486784168}
   - component: {fileID: 33018419469632608}
   - component: {fileID: 23458456864992360}
+  - component: {fileID: 5292184521997633354}
   m_Layer: 0
   m_Name: GoldCoins
   m_TagString: Untagged
@@ -26,10 +27,10 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1950871307682000}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0, y: 0.25265813, z: -0, w: -0.96755564}
   m_LocalPosition: {x: 0.017469307, y: 0.014255274, z: -0.1131496}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 15, y: 15, z: 15}
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -86,3 +87,23 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &5292184521997633354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1950871307682000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a111a3a5d0aa2f4fa6b6e46806cd369, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerTag: Player
+  pickupRadius: 2
+  pickupDelay: 0.3
+  lifetime: 120
+  floatAmplitude: 0.1
+  floatSpeed: 3
+  rotateSpeed: 120
+  customVisual: {fileID: 0}

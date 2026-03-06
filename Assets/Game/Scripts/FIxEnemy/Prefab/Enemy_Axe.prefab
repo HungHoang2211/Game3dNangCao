@@ -3505,6 +3505,7 @@ GameObject:
   - component: {fileID: 8924142471561905759}
   - component: {fileID: 1200409066459144401}
   - component: {fileID: 3130772227989870991}
+  - component: {fileID: -5055428825370316694}
   m_Layer: 8
   m_Name: Enemy_Axe
   m_TagString: Enemy
@@ -3631,7 +3632,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentHp: 100
   MaxHealth: 100
-  itemPrefab: {fileID: 7358018052118245373, guid: 3817dcc9dc15c3e418d1f22b4fb291d9, type: 3}
 --- !u!114 &7699351589634077735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3713,6 +3713,23 @@ MonoBehaviour:
   chaseSpeed: 0
   turnSpeed: 0
   patrolPoints: []
+--- !u!114 &-5055428825370316694
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6913765156719757568}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f4e959305fc5946b16262fce6d4612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  expReward: 35
+  minGold: 5
+  maxGold: 40
+  goldDropPrefab: {fileID: 1950871307682000, guid: 01348926c7cbb3347a006c37204131c3, type: 3}
+  dropHeightAboveGround: 0.3
 --- !u!1 &7158514072619961007
 GameObject:
   m_ObjectHideFlags: 0

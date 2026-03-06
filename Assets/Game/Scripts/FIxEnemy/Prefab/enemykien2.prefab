@@ -3051,6 +3051,7 @@ GameObject:
   - component: {fileID: 4276409290264983978}
   - component: {fileID: 302083138921853429}
   - component: {fileID: 1487241617619176541}
+  - component: {fileID: -4424901584082150417}
   m_Layer: 0
   m_Name: enemykien2
   m_TagString: Enemy
@@ -3186,7 +3187,7 @@ MonoBehaviour:
   floatAmplitude: 0.1
   floatSpeed: 3
   rotateSpeed: 120
-  customVisual: {fileID: 1029750363295070471, guid: a2c94cead11563349bb47034192b5457, type: 3}
+  customVisual: {fileID: 1950871307682000, guid: 01348926c7cbb3347a006c37204131c3, type: 3}
 --- !u!114 &1487241617619176541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3200,8 +3201,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootTable: {fileID: 11400000, guid: 08c96d39314ecee48a8cd8dc6f1cc110, type: 2}
-  droppedItemPrefab: {fileID: 0}
+  droppedItemPrefab: {fileID: 2849199694717479921, guid: 2110ff258fcd4b540aa72a27396bdfc9, type: 3}
   dropRadius: 1.5
+  dropHeightAboveGround: 0.3
+--- !u!114 &-4424901584082150417
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7818935508021522571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f4e959305fc5946b16262fce6d4612, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  expReward: 30
+  minGold: 2
+  maxGold: 30
+  goldDropPrefab: {fileID: 1499673721880978080, guid: b9fed3a6484d9c44cbe28f97acaee779, type: 3}
   dropHeightAboveGround: 0.3
 --- !u!1 &7821112756998456298
 GameObject:
