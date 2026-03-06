@@ -498,7 +498,7 @@ GameObject:
   - component: {fileID: 4843586229872143506}
   m_Layer: 0
   m_Name: enemyVuFIx
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -585,6 +585,7 @@ MonoBehaviour:
   patrolIdleTime: 3
   rotationSpeed: 7
   attackDuration: 1
+  chaseUpdateInterval: 0.3
   Damage: 10
 --- !u!54 &8407218287737247401
 Rigidbody:

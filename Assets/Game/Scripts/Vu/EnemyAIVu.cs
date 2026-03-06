@@ -13,18 +13,24 @@ public class EnemyAI : MonoBehaviour
     public float patrolRadius = 20f;
     public float attackCooldown = 2f;
     public float patrolIdleTime = 3f;
-    public float rotationSpeed = 15f; // Tăng tốc độ xoay để bắt kịp Player nhanh hơn
+    public float rotationSpeed = 15f;
     public float attackDuration = 1.0f;
+
+    [Header("Path Update")]
+    [Tooltip("How often to recalculate path during chase (seconds)")]
+    public float chaseUpdateInterval = 0.3f;
 
     private NavMeshAgent agent;
     private float cooldownTimer;
     private float idleTimer;
     private float attackTimer;
+    private float chaseUpdateTimer;
 
     private bool isAttacking;
     private bool isIdle;
 
     public int Damage = 10;
+
     private enum State { Patrol, Chase, Attack }
     private State currentState;
 
@@ -33,7 +39,8 @@ public class EnemyAI : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
         agent.updateRotation = false;
 
-        if (animator == null) animator = GetComponentInChildren<Animator>();
+        if (animator == null)
+            animator = GetComponentInChildren<Animator>();
 
         if (player == null)
         {
@@ -41,72 +48,107 @@ public class EnemyAI : MonoBehaviour
             if (playerObj != null) player = playerObj.transform;
         }
 
-        SetNewPatrolPoint();
         currentState = State.Patrol;
+        SetNewPatrolPoint();
     }
 
     void Update()
     {
         if (player == null) return;
 
-        // Giảm cooldown liên tục
         if (cooldownTimer > 0) cooldownTimer -= Time.deltaTime;
 
-        // XỬ LÝ KHI ĐANG TRONG TRẠNG THÁI TẤN CÔNG
+        // Handle attack state separately
         if (isAttacking)
         {
-            agent.velocity = Vector3.zero;
-            attackTimer -= Time.deltaTime;
-
-            // Xoay nhanh về phía player khi đang đánh để đòn đánh không bị lệch
-            SmoothLookAt(player.position);
-
-            if (attackTimer <= 0f)
-            {
-                isAttacking = false;
-                agent.isStopped = false;
-            }
+            HandleAttacking();
             return;
         }
 
         float distanceToPlayer = Vector3.Distance(transform.position, player.position);
 
-        // KIỂM TRA ĐIỀU KIỆN ĐÁNH NGAY LẬP TỨC
+        // Check attack first
         if (distanceToPlayer <= attackRange && cooldownTimer <= 0f)
         {
-            Attack(); // Gọi trực tiếp để giảm delay do switch case
+            Attack();
             return;
         }
 
-        // CHUYỂN TRẠNG THÁI DI CHUYỂN
+        // State transitions
         if (distanceToPlayer <= detectionRadius)
         {
-            currentState = State.Chase;
+            if (currentState != State.Chase)
+            {
+                currentState = State.Chase;
+                isIdle = false;
+                chaseUpdateTimer = 0f; // Force immediate path update
+            }
+            ChasePlayer();
         }
         else
         {
-            currentState = State.Patrol;
+            if (currentState != State.Patrol)
+            {
+                currentState = State.Patrol;
+                SetNewPatrolPoint();
+            }
+            Patrol();
         }
 
-        ExecuteMovementState();
+        // Animation
+        bool isMoving = agent.hasPath && agent.velocity.sqrMagnitude > 0.01f;
+        animator.SetBool("isWalking", isMoving);
 
-        // ĐỒNG BỘ ANIMATION
-        animator.SetBool("isWalking", agent.velocity.magnitude > 0.1f);
-
+        // Rotate toward movement direction
         if (agent.velocity.sqrMagnitude > 0.1f)
         {
             SmoothLookAt(transform.position + agent.velocity);
         }
     }
 
-    void ExecuteMovementState()
+    // ============================================
+    // ATTACK
+    // ============================================
+
+    void Attack()
     {
-        switch (currentState)
+        isAttacking = true;
+        attackTimer = attackDuration;
+        cooldownTimer = attackCooldown;
+
+        // Stop movement completely
+        agent.isStopped = true;
+        agent.ResetPath();
+
+        // Deal damage
+        Player playerHealth = player.GetComponent<Player>();
+        if (playerHealth != null)
         {
-            case State.Patrol: Patrol(); break;
-            case State.Chase: ChasePlayer(); break;
+            playerHealth.TakeDamage(Damage);
+        }
+
+        // Play animation
+        animator.ResetTrigger("AttackVu");
+        animator.SetTrigger("AttackVu");
+    }
+
+    void HandleAttacking()
+    {
+        // Face player during attack
+        SmoothLookAt(player.position);
+
+        attackTimer -= Time.deltaTime;
+
+        if (attackTimer <= 0f)
+        {
+            isAttacking = false;
+            agent.isStopped = false;
         }
     }
+
+    // ============================================
+    // PATROL (fixed jitter)
+    // ============================================
 
     void Patrol()
     {
@@ -121,8 +163,13 @@ public class EnemyAI : MonoBehaviour
             return;
         }
 
-        if (agent.remainingDistance <= agent.stoppingDistance && !agent.pathPending)
+        // Check if arrived (with safe threshold)
+        if (!agent.pathPending && agent.remainingDistance <= agent.stoppingDistance + 0.3f)
         {
+            // Stop agent to prevent micro-jitter
+            agent.isStopped = true;
+            agent.ResetPath();
+
             isIdle = true;
             idleTimer = 0f;
         }
@@ -131,52 +178,44 @@ public class EnemyAI : MonoBehaviour
     void SetNewPatrolPoint()
     {
         Vector3 randomDirection = Random.insideUnitSphere * patrolRadius + transform.position;
-        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, patrolRadius, 1))
+
+        if (NavMesh.SamplePosition(randomDirection, out NavMeshHit hit, patrolRadius, NavMesh.AllAreas))
         {
-            agent.SetDestination(hit.position);
             agent.isStopped = false;
+            agent.SetDestination(hit.position);
         }
     }
+
+    // ============================================
+    // CHASE (fixed: don't recalc every frame)
+    // ============================================
 
     void ChasePlayer()
     {
-        isIdle = false;
         agent.isStopped = false;
-        agent.SetDestination(player.position);
-    }
 
-    void Attack()
-    {
-        isAttacking = true;
+        // Only update path every X seconds (not every frame)
+        chaseUpdateTimer -= Time.deltaTime;
 
-        // Gây damage trực tiếp cho player đang target
-        Player playerHealth = player.GetComponent<Player>();
-        if (playerHealth != null)
+        if (chaseUpdateTimer <= 0f)
         {
-            playerHealth.TakeDamage(Damage);
+            agent.SetDestination(player.position);
+            chaseUpdateTimer = chaseUpdateInterval;
         }
-
-        agent.isStopped = true;
-        agent.velocity = Vector3.zero;
-        agent.ResetPath();
-
-        cooldownTimer = attackCooldown;
-        attackTimer = attackDuration;
-
-        animator.ResetTrigger("AttackVu");
-        animator.SetTrigger("AttackVu");
     }
+
+    // ============================================
+    // ROTATION
+    // ============================================
 
     void SmoothLookAt(Vector3 targetPos)
     {
         Vector3 direction = (targetPos - transform.position).normalized;
         direction.y = 0;
 
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
-        }
+        if (direction.sqrMagnitude < 0.001f) return;
+
+        Quaternion targetRotation = Quaternion.LookRotation(direction);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * rotationSpeed);
     }
-  
 }

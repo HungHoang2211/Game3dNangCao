@@ -1465,11 +1465,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnEntries:
   - prefab: {fileID: 6913765156719757568, guid: ba2315c0612999c4ab51bd45c8a1e1f8, type: 3}
-    maxCount: 7
-  spawnRadius: 5.64
+    maxCount: 3
+  spawnRadius: 3.49
   groundCheckHeight: 20
-  respawnDelay: 5
-  spawnInterval: 0.5
+  respawnDelay: 25
+  spawnInterval: 5
 --- !u!4 &38263350
 Transform:
   m_ObjectHideFlags: 0
@@ -1479,7 +1479,7 @@ Transform:
   m_GameObject: {fileID: 38263348}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -16.43, y: 0.7, z: -13.74}
+  m_LocalPosition: {x: -14.87, y: 0.7, z: -15.16}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12923,10 +12923,10 @@ MonoBehaviour:
   spawnEntries:
   - prefab: {fileID: 2436070689662671842, guid: 55a9e85fef56678488d9fc9e0886abf0, type: 3}
     maxCount: 6
-  spawnRadius: 10
+  spawnRadius: 6.33
   groundCheckHeight: 20
-  respawnDelay: 5
-  spawnInterval: 0.5
+  respawnDelay: 20
+  spawnInterval: 5
 --- !u!4 &261041089
 Transform:
   m_ObjectHideFlags: 0
@@ -12936,7 +12936,7 @@ Transform:
   m_GameObject: {fileID: 261041087}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 51.77, y: 0.7, z: -33.04}
+  m_LocalPosition: {x: 48.16, y: 0.7, z: -33.04}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18885,10 +18885,10 @@ MonoBehaviour:
   spawnEntries:
   - prefab: {fileID: 7818935508021522571, guid: f6ac528f3be62e44fa30263d9232ecd0, type: 3}
     maxCount: 5
-  spawnRadius: 10
+  spawnRadius: 6.49
   groundCheckHeight: 20
-  respawnDelay: 5
-  spawnInterval: 0.5
+  respawnDelay: 22
+  spawnInterval: 4
 --- !u!4 &365634623
 Transform:
   m_ObjectHideFlags: 0
@@ -21441,57 +21441,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &458784818
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 458784820}
-  - component: {fileID: 458784819}
-  m_Layer: 0
-  m_Name: EnemySpawnerVu (1)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &458784819
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458784818}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b8d6ff08a3c620459a366eb1d2ec738, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  spawnEntries:
-  - prefab: {fileID: 2436070689662671842, guid: 55a9e85fef56678488d9fc9e0886abf0, type: 3}
-    maxCount: 6
-  spawnRadius: 10
-  groundCheckHeight: 20
-  respawnDelay: 5
-  spawnInterval: 0.5
---- !u!4 &458784820
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 458784818}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -21.7, y: 0.7, z: 54.43}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &458901747 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2927209655269959477, guid: 3964c23ae9838e84889ea6d65b5861aa, type: 3}
@@ -32514,10 +32463,10 @@ MonoBehaviour:
   spawnEntries:
   - prefab: {fileID: 6913765156719757568, guid: ba2315c0612999c4ab51bd45c8a1e1f8, type: 3}
     maxCount: 5
-  spawnRadius: 10
+  spawnRadius: 7.42
   groundCheckHeight: 20
-  respawnDelay: 5
-  spawnInterval: 0.5
+  respawnDelay: 25
+  spawnInterval: 5
 --- !u!4 &686642718
 Transform:
   m_ObjectHideFlags: 0
@@ -32527,7 +32476,7 @@ Transform:
   m_GameObject: {fileID: 686642716}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28.63, y: 0.7, z: -33.04}
+  m_LocalPosition: {x: 32, y: 0.7, z: -26.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -55304,12 +55253,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnEntries:
-  - prefab: {fileID: 0}
+  - prefab: {fileID: 2436070689662671842, guid: 55a9e85fef56678488d9fc9e0886abf0, type: 3}
     maxCount: 5
-  spawnRadius: 10
+  spawnRadius: 5.77
   groundCheckHeight: 20
-  respawnDelay: 5
-  spawnInterval: 0.5
+  respawnDelay: 30
+  spawnInterval: 5
 --- !u!4 &1253125182
 Transform:
   m_ObjectHideFlags: 0
@@ -55319,7 +55268,7 @@ Transform:
   m_GameObject: {fileID: 1253125180}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 28.63, y: 0.7, z: -20.66}
+  m_LocalPosition: {x: 30.93, y: 0.7, z: -24.07}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -61284,11 +61233,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnEntries:
   - prefab: {fileID: 6913765156719757568, guid: ba2315c0612999c4ab51bd45c8a1e1f8, type: 3}
-    maxCount: 5
-  spawnRadius: 8.06
+    maxCount: 7
+  spawnRadius: 3.85
   groundCheckHeight: 20
-  respawnDelay: 5
-  spawnInterval: 0.5
+  respawnDelay: 25
+  spawnInterval: 5
 --- !u!4 &1406772713
 Transform:
   m_ObjectHideFlags: 0
@@ -61298,7 +61247,7 @@ Transform:
   m_GameObject: {fileID: 1406772711}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.15, y: 0.7, z: 40.94}
+  m_LocalPosition: {x: -13.61, y: 6.13, z: 53.54}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -61317,12 +61266,12 @@ GameObject:
   - component: {fileID: 1413876900}
   - component: {fileID: 1413876899}
   m_Layer: 0
-  m_Name: Plane
+  m_Name: Deep
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!64 &1413876899
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -67182,10 +67131,10 @@ MonoBehaviour:
   spawnEntries:
   - prefab: {fileID: 3682466346997056394, guid: f1a967191bed7ce419a9073c1c6e9540, type: 3}
     maxCount: 5
-  spawnRadius: 10
+  spawnRadius: 6.33
   groundCheckHeight: 20
-  respawnDelay: 5
-  spawnInterval: 0.5
+  respawnDelay: 22
+  spawnInterval: 4
 --- !u!4 &1589382888
 Transform:
   m_ObjectHideFlags: 0
@@ -67195,7 +67144,7 @@ Transform:
   m_GameObject: {fileID: 1589382886}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -9.12, y: 0.7, z: 24.59}
+  m_LocalPosition: {x: -9.12, y: 0.7, z: 19.79}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -112700,7 +112649,6 @@ SceneRoots:
   - {fileID: 2061388321}
   - {fileID: 1413876902}
   - {fileID: 261041089}
-  - {fileID: 458784820}
   - {fileID: 1589382888}
   - {fileID: 365634623}
   - {fileID: 686642718}
