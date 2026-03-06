@@ -51,10 +51,6 @@ public class ShopManager : MonoBehaviour
     [SerializeField] private UpgradeSlotUI accessoryUpgradeSlot;
 
 
-    // ============================================
-    // KHỞI TẠO
-    // ============================================
-
     private void Awake()
     {
         Debug.Log("[ShopManager] Awake - Initializing...");
@@ -73,9 +69,6 @@ public class ShopManager : MonoBehaviour
 
     private void Start()
     {
-
-
-        // Setup tab buttons
         if (buyTabButton != null)
             buyTabButton.onClick.AddListener(() => SwitchTab(ShopTab.Buy));
         else
@@ -106,8 +99,9 @@ public class ShopManager : MonoBehaviour
             Debug.LogError("[ShopManager] ❌ CurrencyManager.Instance is NULL!");
         }
 
-        // Đóng shop ban đầu
+
         CloseShop();
+
     }
 
     private void OnDestroy()
@@ -120,6 +114,7 @@ public class ShopManager : MonoBehaviour
 
     public void OpenShop()
     {
+        SFXManager.Instance.ClickButton();
         HideOtherCanvases();
 
         if (shopPanel != null)
@@ -138,6 +133,7 @@ public class ShopManager : MonoBehaviour
 
     public void CloseShop()
     {
+        SFXManager.Instance.ClickButton();
         if (shopPanel != null)
         {
             shopPanel.SetActive(false);
@@ -147,7 +143,6 @@ public class ShopManager : MonoBehaviour
     }
     private void SwitchTab(ShopTab tab)
     {
-        Debug.Log($"[ShopManager] SwitchTab to: {tab}");
 
         currentTab = tab;
 
@@ -176,10 +171,6 @@ public class ShopManager : MonoBehaviour
 
     private void PopulateBuyGrid()
     {
-        Debug.Log($"[ShopManager] === PopulateBuyGrid START ===");
-        Debug.Log($"[ShopManager] shopItems count: {shopItems.Count}");
-        Debug.Log($"[ShopManager] buyGridContainer: {(buyGridContainer != null ? "OK" : "NULL")}");
-        Debug.Log($"[ShopManager] shopItemSlotPrefab: {(shopItemSlotPrefab != null ? "OK" : "NULL")}");
 
         foreach (var slot in buySlots)
         {
@@ -189,13 +180,11 @@ public class ShopManager : MonoBehaviour
 
         if (buyGridContainer == null)
         {
-            Debug.LogError("[ShopManager] ❌ buyGridContainer is NULL! Check Inspector assignments!");
             return;
         }
 
         if (shopItemSlotPrefab == null)
         {
-            Debug.LogError("[ShopManager] ❌ shopItemSlotPrefab is NULL! Assign prefab in Inspector!");
             return;
         }
 
@@ -209,20 +198,14 @@ public class ShopManager : MonoBehaviour
                 continue;
             }
 
-            Debug.Log($"[ShopManager] Processing item: {item.itemName}");
-            Debug.Log($"  - buyPrice: {item.buyPrice}");
-            Debug.Log($"  - sellPrice: {item.sellPrice}");
-
             if (item.buyPrice <= 0)
             {
-                Debug.LogWarning($"[ShopManager] ⚠️ {item.itemName} has buyPrice = {item.buyPrice}, skipping");
                 continue;
             }
 
             GameObject slotObj = Instantiate(shopItemSlotPrefab, buyGridContainer);
             if (slotObj == null)
             {
-                Debug.LogError("[ShopManager] ❌ Failed to instantiate prefab!");
                 continue;
             }
 
@@ -233,22 +216,16 @@ public class ShopManager : MonoBehaviour
                 slot.SetupBuySlot(item, this);
                 buySlots.Add(slot);
                 createdCount++;
-                Debug.Log($"[ShopManager] ✅ Created slot #{createdCount} for {item.itemName}");
             }
             else
             {
-                Debug.LogError($"[ShopManager] ❌ ShopItemSlot component not found on instantiated prefab!");
                 Destroy(slotObj);
             }
         }
-
-        Debug.Log($"[ShopManager] === PopulateBuyGrid END === Created {buySlots.Count} slots");
     }
 
     private void PopulateSellGrid()
     {
-        Debug.Log("[ShopManager] === PopulateSellGrid START ===");
-
         // Xóa slots cũ
         foreach (var slot in sellSlots)
         {
@@ -258,26 +235,22 @@ public class ShopManager : MonoBehaviour
 
         if (inventory == null)
         {
-            Debug.LogError("[ShopManager] ❌ Inventory is NULL!");
             return;
         }
 
         if (sellGridContainer == null)
         {
-            Debug.LogError("[ShopManager] ❌ sellGridContainer is NULL!");
             return;
         }
 
         if (shopItemSlotPrefab == null)
         {
-            Debug.LogError("[ShopManager] ❌ shopItemSlotPrefab is NULL!");
             return;
         }
 
         // Tạo slots cho items trong inventory có thể bán
         InventorySlot[] slots = inventory.GetAllSlots();
 
-        Debug.Log($"[ShopManager] Inventory has {slots.Length} total slots");
 
         int itemsFound = 0;
         int itemsCreated = 0;
@@ -290,13 +263,9 @@ public class ShopManager : MonoBehaviour
             }
 
             itemsFound++;
-            Debug.Log($"[ShopManager] Found item #{itemsFound}: {invSlot.item.itemName}");
-            Debug.Log($"  - Quantity: {invSlot.quantity}");
-            Debug.Log($"  - SellPrice: {invSlot.item.sellPrice}");
 
             if (invSlot.item.sellPrice <= 0)
             {
-                Debug.LogWarning($"[ShopManager] ⚠️ {invSlot.item.itemName} cannot be sold (sellPrice = 0)");
                 continue;
             }
 
@@ -308,45 +277,34 @@ public class ShopManager : MonoBehaviour
                 slot.SetupSellSlot(invSlot.item, invSlot.quantity, this);
                 sellSlots.Add(slot);
                 itemsCreated++;
-                Debug.Log($"[ShopManager] ✅ Created sell slot #{itemsCreated} for {invSlot.item.itemName}");
             }
             else
             {
-                Debug.LogError($"[ShopManager] ❌ ShopItemSlot component not found!");
                 Destroy(slotObj);
             }
         }
 
-        Debug.Log($"[ShopManager] === PopulateSellGrid END ===");
-        Debug.Log($"[ShopManager] Items found in inventory: {itemsFound}");
-        Debug.Log($"[ShopManager] Sellable slots created: {sellSlots.Count}");
     }
 
     private void PopulateUpgradeGrid()
     {
-        Debug.Log("[ShopManager] Populating Upgrade Grid");
 
         if (equipment == null)
         {
-            Debug.LogError("[ShopManager] Equipment is NULL!");
             return;
         }
 
-        // Setup weapon slot
         if (weaponUpgradeSlot != null)
         {
             ItemObject weapon = equipment.GetWeapon();
             weaponUpgradeSlot.Setup(EquipmentSlot.Weapon, weapon, this);
         }
 
-        // Setup armor slot
         if (armorUpgradeSlot != null)
         {
             ItemObject armor = equipment.GetArmor();
             armorUpgradeSlot.Setup(EquipmentSlot.Armor, armor, this);
         }
-
-        // Setup accessory slot
         if (accessoryUpgradeSlot != null)
         {
             ItemObject accessory = equipment.GetAccessory();
@@ -354,9 +312,6 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Upgrade equipped item
-    /// </summary>
     public void UpgradeItem(EquipmentSlot slot, ItemObject item)
     {
         if (item == null)
@@ -373,22 +328,18 @@ public class ShopManager : MonoBehaviour
 
         int cost = item.GetUpgradeCost();
 
-        // Check if has enough gold
         if (!CurrencyManager.Instance.HasEnoughGold(cost))
         {
-            Debug.LogWarning($"[ShopManager] Không đủ vàng để nâng cấp! Cần {cost} vàng");
             return;
         }
 
-        // Spend gold
+
         if (CurrencyManager.Instance.SpendGold(cost))
         {
-            // Store old stats for comparison
             float oldDamage = item.GetUpgradedDamage();
             float oldDefense = item.GetUpgradedDefense();
 
-            // IMPORTANT: Need to update equipment stats BEFORE upgrade
-            // Remove old bonuses
+
             if (equipment.IsEquipped(item))
             {
                 equipment.UnequipItem(slot);
@@ -408,39 +359,27 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    // ============================================
-    // MUA / BÁN ITEMS
-    // ============================================
 
     public void BuyItem(ItemObject item)
     {
         if (item == null) return;
 
-        Debug.Log($"[ShopManager] BuyItem: {item.itemName}, Price: {item.buyPrice}");
-
-        // Kiểm tra có đủ tiền không
         if (!CurrencyManager.Instance.HasEnoughGold(item.buyPrice))
         {
             Debug.LogWarning($"[ShopManager] ❌ Không đủ tiền mua {item.itemName}!");
             return;
         }
 
-        // Kiểm tra inventory có chỗ không
         if (inventory.IsFull() && !item.isStackable)
         {
             Debug.LogWarning($"[ShopManager] ❌ Túi đồ đầy! Không thể mua {item.itemName}");
             return;
         }
 
-        // Trừ tiền
         if (CurrencyManager.Instance.SpendGold(item.buyPrice))
         {
-            // Thêm vào inventory
             inventory.AddItem(item, 1);
 
-            Debug.Log($"[ShopManager] ✅ Đã mua {item.itemName} với giá {item.buyPrice} vàng");
-
-            // Refresh buy grid để update button states
             RefreshBuySlots();
         }
     }

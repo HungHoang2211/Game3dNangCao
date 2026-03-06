@@ -19,12 +19,13 @@ MonoBehaviour:
   itemType: 0
   isStackable: 0
   maxStackSize: 99
-  buyPrice: 100
-  sellPrice: 50
+  buyPrice: 0
+  sellPrice: 0
   damageBonus: 20
   defenseBonus: 0
   speedBonus: 0
   critRateBonus: 0
+  attackRangeBonus: 0
   upgradeLevel: 0
   maxUpgradeLevel: 10
   upgradeCostPerLevel: 100
@@ -37,3 +38,4 @@ MonoBehaviour:
   - {r: 1, g: 0.5, b: 0, a: 1}
   hpRestore: 0
   usableInCombat: 1
+  equipPrefab: {fileID: 0}

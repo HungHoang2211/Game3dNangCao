@@ -160,6 +160,7 @@ public class UpgradeSlotUI : MonoBehaviour
     }
     private void OnUpgradeClicked()
     {
+        SFXManager.Instance.ClickButton();
         if (shopManager != null && item != null)
         {
             shopManager.UpgradeItem(slotType, item);

@@ -21,9 +21,9 @@ MonoBehaviour:
   maxStackSize: 99
   buyPrice: 100
   sellPrice: 50
-  damageBonus: 10
+  damageBonus: 20
   defenseBonus: 0
-  speedBonus: 0
+  speedBonus: 2
   critRateBonus: 50
   attackRangeBonus: 1.4
   upgradeLevel: 0

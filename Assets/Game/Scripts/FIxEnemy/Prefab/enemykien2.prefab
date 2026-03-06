@@ -3052,6 +3052,7 @@ GameObject:
   - component: {fileID: 302083138921853429}
   - component: {fileID: 1487241617619176541}
   - component: {fileID: -4424901584082150417}
+  - component: {fileID: 6994595282337903994}
   m_Layer: 0
   m_Name: enemykien2
   m_TagString: Enemy
@@ -3221,6 +3222,19 @@ MonoBehaviour:
   maxGold: 30
   goldDropPrefab: {fileID: 1499673721880978080, guid: b9fed3a6484d9c44cbe28f97acaee779, type: 3}
   dropHeightAboveGround: 0.3
+--- !u!114 &6994595282337903994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7818935508021522571}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 229275cb6c0f272469374229618284cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxHealth: 180
 --- !u!1 &7821112756998456298
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using UnityEngine.VFX;
 
 /// <summary>
 /// HUD button for using health potions from inventory.
@@ -145,6 +146,7 @@ public class PotionButton : MonoBehaviour
 
         // Use potion: heal + remove from inventory
         playerStats.Heal(potionItem.hpRestore);
+        SFXManager.Instance.PlayHeal();
         inventory.RemoveItem(potionItem, 1);
 
         Debug.Log($"[PotionButton] Used {potionItem.itemName}, restored {potionItem.hpRestore} HP");

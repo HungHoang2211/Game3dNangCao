@@ -17,8 +17,8 @@ public class WeaponVisual : MonoBehaviour
     [SerializeField] private Transform rightHandBone;
 
     [Header("Default Weapon")]
-    [Tooltip("Vu khi mac dinh khi khong equip gi")]
-    [SerializeField] private GameObject defaultWeaponPrefab;
+    [Tooltip("ItemObject vu khi mac dinh")]
+    [SerializeField] private ItemObject defaultWeaponItem;
 
     [Header("Offset")]
     [SerializeField] private Vector3 positionOffset = Vector3.zero;
@@ -39,16 +39,21 @@ public class WeaponVisual : MonoBehaviour
         if (equipmentManager != null)
             equipmentManager.OnEquipmentChanged += HandleEquipmentChanged;
 
-        // Check if already has weapon equipped
         ItemObject weapon = equipmentManager != null ? equipmentManager.GetWeapon() : null;
 
         if (weapon != null && weapon.equipPrefab != null)
         {
             SpawnWeapon(weapon.equipPrefab, false);
         }
-        else
+        else if (defaultWeaponItem != null && equipmentManager != null)
         {
-            SpawnDefaultWeapon();
+            // Equip default weapon through system (shows in inventory)
+            InventoryManager inventory = FindAnyObjectByType<InventoryManager>();
+            if (inventory != null)
+            {
+                inventory.AddItem(defaultWeaponItem, 1);
+                equipmentManager.EquipItem(defaultWeaponItem);
+            }
         }
     }
 
@@ -76,13 +81,13 @@ public class WeaponVisual : MonoBehaviour
 
     private void SpawnDefaultWeapon()
     {
-        if (defaultWeaponPrefab == null)
+        if (defaultWeaponItem == null || defaultWeaponItem.equipPrefab == null)
         {
             DestroyCurrentWeapon();
             return;
         }
 
-        SpawnWeapon(defaultWeaponPrefab, true);
+        SpawnWeapon(defaultWeaponItem.equipPrefab, true);
     }
 
     private void SpawnWeapon(GameObject prefab, bool isDefault)

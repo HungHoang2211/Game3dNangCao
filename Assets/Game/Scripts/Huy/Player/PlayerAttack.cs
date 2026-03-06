@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.VFX;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -118,6 +119,7 @@ public class PlayerAttack : MonoBehaviour
         {
             animator.ResetTrigger("Attack");
             animator.SetTrigger("Attack");
+            SFXManager.Instance.PlaySlash();
         }
 
         float damage = GetPlayerDamage();

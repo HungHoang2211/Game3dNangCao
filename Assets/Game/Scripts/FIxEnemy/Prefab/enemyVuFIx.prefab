@@ -580,15 +580,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 0}
   animator: {fileID: 5805310356152631417}
-  detectionRadius: 15
-  attackRange: 3
+  detectionRadius: 20
+  attackRange: 4
   patrolRadius: 20
-  attackCooldown: 2
-  patrolIdleTime: 3
-  rotationSpeed: 7
+  attackCooldown: 3
+  patrolIdleTime: 2
+  rotationSpeed: 8
   attackDuration: 1
   chaseUpdateInterval: 0.3
-  Damage: 10
+  Damage: 25
 --- !u!54 &8407218287737247401
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -628,7 +628,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebcbe1c2aed29964e8593e15db4f65e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 200
 --- !u!136 &4843586229872143506
 CapsuleCollider:
   m_ObjectHideFlags: 0

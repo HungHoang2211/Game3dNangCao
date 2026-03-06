@@ -14,6 +14,7 @@ public class EnemyHealth : MonoBehaviour
 
         if (currentHp <= 0)
         {
+            QuestManager.Instance.OnEnemyKilled(gameObject.name);
             Destroy(gameObject);
             Die();
         }

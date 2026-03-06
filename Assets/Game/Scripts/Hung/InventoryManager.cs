@@ -23,9 +23,7 @@ public class InventoryManager : MonoBehaviour
     public event Action<ItemObject, int> OnItemRemoved; // (item, quantity)
     public event Action<string> OnInventoryMessage;     // For UI messages
 
-    // ============================================
-    // INITIALIZATION
-    // ============================================
+
 
     private void Awake()
     {
@@ -412,9 +410,6 @@ public class InventoryManager : MonoBehaviour
         Debug.Log($"Empty slots: {GetEmptySlotCount()}/{inventorySize}");
     }
 
-    /// <summary>
-    /// Show inventory message to user (callable from outside)
-    /// </summary>
     public void ShowMessage(string message)
     {
         Debug.LogWarning($"[InventoryManager] {message}");

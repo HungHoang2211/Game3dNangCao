@@ -63,13 +63,14 @@ public class GameOverUI : MonoBehaviour
 
     public void RestartGame()
     {
-        Debug.Log("Press button");
+        SFXManager.Instance.ClickButton();
         Time.timeScale = 1f;  // thêm dòng này
         SceneManager.LoadScene("Main");
     }
 
     public void GoToMainMenu()
     {
+        SFXManager.Instance.ClickButton();
         Debug.Log("Press button");
         Time.timeScale = 1f;  // thêm dòng này
         SceneManager.LoadScene("Menu");

@@ -23,12 +23,12 @@ MonoBehaviour:
   sellPrice: 50
   damageBonus: 20
   defenseBonus: 0
-  speedBonus: 0
+  speedBonus: 5
   critRateBonus: 90
   attackRangeBonus: 1.2
   upgradeLevel: 0
   maxUpgradeLevel: 10
-  upgradeCostPerLevel: 40
+  upgradeCostPerLevel: 400
   upgradeColors:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}

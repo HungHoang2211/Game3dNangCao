@@ -22,7 +22,7 @@ MonoBehaviour:
   buyPrice: 400
   sellPrice: 120
   damageBonus: 0
-  defenseBonus: 40
+  defenseBonus: 15
   speedBonus: 0
   critRateBonus: 0
   attackRangeBonus: 0

@@ -22,9 +22,9 @@ MonoBehaviour:
   buyPrice: 300
   sellPrice: 100
   damageBonus: 45
-  defenseBonus: 0
-  speedBonus: 0
-  critRateBonus: 10
+  defenseBonus: 5
+  speedBonus: -2
+  critRateBonus: 40
   attackRangeBonus: 1.7
   upgradeLevel: 0
   maxUpgradeLevel: 10

@@ -25,6 +25,16 @@ public class YouWinUI_H : MonoBehaviour
         }
 
         winTextTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
+
+        // Thêm dòng này - hiện YouWin khi boss chết
+        if (QuestManager.Instance != null)
+            QuestManager.Instance.OnQuestCompleted += ShowYouWin;
+    }
+
+    void OnDestroy()
+    {
+        if (QuestManager.Instance != null)
+            QuestManager.Instance.OnQuestCompleted -= ShowYouWin;
     }
 
     void Update()

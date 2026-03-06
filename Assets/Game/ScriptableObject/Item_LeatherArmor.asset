@@ -22,9 +22,10 @@ MonoBehaviour:
   buyPrice: 200
   sellPrice: 100
   damageBonus: 0
-  defenseBonus: 10
+  defenseBonus: 5
   speedBonus: 0
   critRateBonus: 0
+  attackRangeBonus: 0
   upgradeLevel: 0
   maxUpgradeLevel: 10
   upgradeCostPerLevel: 100
@@ -37,3 +38,4 @@ MonoBehaviour:
   - {r: 1, g: 0.5, b: 0, a: 1}
   hpRestore: 0
   usableInCombat: 1
+  equipPrefab: {fileID: 0}

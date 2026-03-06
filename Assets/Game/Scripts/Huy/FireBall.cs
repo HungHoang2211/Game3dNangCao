@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.VFX;
 
 public class FireBall : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class FireBall : MonoBehaviour
             Debug.Log($"[FireBall] Hit {other.name} for {fireBallDamage:F1} damage!");
 
             enemy.TakeDamage(fireBallDamage);
-
+            SFXManager.Instance.PlayExplosion();
             SpawnHitEffect();
             Destroy(gameObject);
             return;

@@ -1,8 +1,6 @@
 using System;
 
-/// <summary>
-/// Represents a single inventory slot
-/// </summary>
+
 [Serializable]
 public class InventorySlot
 {
@@ -21,17 +19,11 @@ public class InventorySlot
         this.quantity = quantity;
     }
 
-    /// <summary>
-    /// Check if slot is empty
-    /// </summary>
     public bool IsEmpty()
     {
         return item == null || quantity <= 0;
     }
 
-    /// <summary>
-    /// Check if can add more of this item to stack
-    /// </summary>
     public bool CanAddToStack(ItemObject itemToAdd, int amount = 1)
     {
         if (item == null || itemToAdd == null) return false;
@@ -41,9 +33,6 @@ public class InventorySlot
         return quantity + amount <= item.maxStackSize;
     }
 
-    /// <summary>
-    /// Add to stack (returns overflow amount)
-    /// </summary>
     public int AddToStack(int amount)
     {
         if (item == null || !item.isStackable) return amount;
@@ -53,12 +42,9 @@ public class InventorySlot
 
         quantity += amountToAdd;
 
-        return amount - amountToAdd; // Return overflow
+        return amount - amountToAdd; 
     }
 
-    /// <summary>
-    /// Remove from stack
-    /// </summary>
     public void RemoveFromStack(int amount)
     {
         quantity -= amount;
@@ -69,18 +55,12 @@ public class InventorySlot
         }
     }
 
-    /// <summary>
-    /// Clear slot
-    /// </summary>
     public void Clear()
     {
         item = null;
         quantity = 0;
     }
 
-    /// <summary>
-    /// Clone this slot
-    /// </summary>
     public InventorySlot Clone()
     {
         return new InventorySlot(item, quantity);
