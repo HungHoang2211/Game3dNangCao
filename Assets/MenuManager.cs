@@ -15,4 +15,19 @@ public class MenuManager : MonoBehaviour
     {
         settingPanel.SetActive(true);
     }
+
+    public void CloseSetting()
+    {
+        settingPanel.SetActive(false);
+    } 
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene("Menu");
+    }
 }
