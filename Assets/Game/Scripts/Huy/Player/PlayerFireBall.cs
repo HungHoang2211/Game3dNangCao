@@ -8,6 +8,10 @@ public class PlayerFireBall : MonoBehaviour
     public GameObject fireBallPrefab;
     public Transform firePoint;
 
+    [Header("Sound")]
+    public AudioSource audioSource;
+    public AudioClip fireBallSound;
+
     [Header("Cooldown")]
     [Tooltip("Seconds between each fireball")]
     public float cooldown = 8f;
@@ -65,6 +69,12 @@ public class PlayerFireBall : MonoBehaviour
         if (fireBallPrefab == null || firePoint == null) return;
 
         Instantiate(fireBallPrefab, firePoint.position, firePoint.rotation);
+
+        if (audioSource != null && fireBallSound != null)
+        {
+            audioSource.PlayOneShot(fireBallSound);
+        }
+
         Debug.Log("[PlayerFireBall] Fire!");
     }
 

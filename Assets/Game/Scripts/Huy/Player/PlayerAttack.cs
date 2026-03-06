@@ -24,6 +24,9 @@ public class PlayerAttack : MonoBehaviour
     private Animator animator;
     private PlayerStats playerStats;
 
+    private PlayerAttackSound attackSound;
+
+
     // Cached current range (updated when stats change)
     private float currentAttackRange;
 
@@ -31,6 +34,8 @@ public class PlayerAttack : MonoBehaviour
     {
         animator = GetComponentInChildren<Animator>();
         playerStats = GetComponent<PlayerStats>();
+
+        attackSound = GetComponent<PlayerAttackSound>();
 
         if (playerStats == null)
         {
@@ -157,6 +162,18 @@ public class PlayerAttack : MonoBehaviour
                 Debug.Log($"[PlayerAttack] Hit {hit.name} for {damage:F1} damage!");
                 enemy.TakeDamage(damage);
                 enemiesHit++;
+            }
+        }
+
+        if (attackSound != null)
+        {
+            if (enemiesHit > 0)
+            {
+                attackSound.PlayEnemyHitSound();
+            }
+            else
+            {
+                attackSound.PlayAirSound();
             }
         }
 
