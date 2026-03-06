@@ -147,7 +147,7 @@ public class PlayerStats : MonoBehaviour
         if (gameOverUI != null)
         {
             gameOverUI.ShowGameOver();
-
+            Time.timeScale = 0f; // Pause the game
         }
         else
         {
