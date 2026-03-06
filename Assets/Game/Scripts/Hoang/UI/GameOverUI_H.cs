@@ -20,13 +20,6 @@ public class GameOverUI : MonoBehaviour
 
         textTransform.localScale = new Vector3(1.5f, 1.5f, 1.5f);
     }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            ShowGameOver();
-        }
-    }
 
     public void ShowGameOver()
     {

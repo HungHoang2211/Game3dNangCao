@@ -21,7 +21,7 @@ public class PlayerStats : MonoBehaviour
     [SerializeField] private float equipmentSpeedBonus = 0f;
     [SerializeField] private float equipmentCritRateBonus = 0f;
     [SerializeField] private float equipmentCritDamageBonus = 0f;
-    [SerializeField] private float equipmentAttackRangeBonus = 0f; // <-- NEW
+    [SerializeField] private float equipmentAttackRangeBonus = 0f; 
 
     [Header("Experience Manager")]
     [SerializeField] private ExperienceManager experienceManager;
@@ -32,12 +32,12 @@ public class PlayerStats : MonoBehaviour
     public event Action<float, float> OnHealthChanged;
     public event Action OnStatsChanged;
     public event Action OnPlayerDeath;
-
+    [Header("Game Over")]
+    [SerializeField] private GameOverUI gameOverUI;
     private void Awake()
     {
         if (config == null)
         {
-            Debug.LogError("[PlayerStats] No config assigned!");
             return;
         }
 
@@ -87,19 +87,10 @@ public class PlayerStats : MonoBehaviour
         return config.GetCritDamageForLevel(currentLevel) + equipmentCritDamageBonus;
     }
 
-    /// <summary>
-    /// Get attack range bonus from equipment.
-    /// PlayerAttack uses: baseRange + this value = final range
-    /// </summary>
     public float GetAttackRangeBonus() 
     {
         return equipmentAttackRangeBonus;
     }
-
-    // ============================================
-    // COMBAT
-    // ============================================
-
     public float CalculateDamage()
     {
         float baseDamage = GetTotalDamage();
@@ -151,13 +142,18 @@ public class PlayerStats : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("[PlayerStats] Player died!");
         OnPlayerDeath?.Invoke();
+
+        if (gameOverUI != null)
+        {
+            gameOverUI.ShowGameOver();
+        }
+        else
+        {
+            Debug.LogError("[PlayerStats] GameOverUI not assigned!");
+        }
     }
 
-    // ============================================
-    // LEVELING
-    // ============================================
 
     public void AddExp(int amount)
     {
@@ -233,9 +229,6 @@ public class PlayerStats : MonoBehaviour
         OnHealthChanged?.Invoke(currentHP, GetMaxHP());
     }
 
-    // ============================================
-    // EQUIPMENT BONUSES (UPDATED: added attackRange param)
-    // ============================================
 
     public void AddEquipmentBonus(float damage = 0, float defense = 0, float speed = 0,
         float critRate = 0, float critDamage = 0, float attackRange = 0)
@@ -281,9 +274,6 @@ public class PlayerStats : MonoBehaviour
         OnStatsChanged?.Invoke();
     }
 
-    // ============================================
-    // GETTERS
-    // ============================================
 
     public int GetCurrentLevel() => currentLevel;
     public int GetCurrentExp() => currentExp;
@@ -292,10 +282,6 @@ public class PlayerStats : MonoBehaviour
     public int GetExpToNextLevel() => config.GetExpForLevel(currentLevel);
     public bool IsMaxLevel() => currentLevel >= config.maxLevel;
 
-    /// <summary>
-    /// Restore full state from save data. 
-    /// Bypasses SyncLevel check.
-    /// </summary>
     public void RestoreState(int level, int exp, float hp)
     {
         currentLevel = level;

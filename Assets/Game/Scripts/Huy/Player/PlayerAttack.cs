@@ -1,10 +1,5 @@
 ﻿using UnityEngine;
 
-/// <summary>
-/// UPDATED: Attack range is now dynamic based on equipment.
-/// Base range + weapon's attackRangeBonus = final range.
-/// Circle visual auto-scales to match.
-/// </summary>
 public class PlayerAttack : MonoBehaviour
 {
     [Header("Attack Settings")]
@@ -27,7 +22,6 @@ public class PlayerAttack : MonoBehaviour
     private PlayerAttackSound attackSound;
 
 
-    // Cached current range (updated when stats change)
     private float currentAttackRange;
 
     void Awake()
@@ -50,13 +44,11 @@ public class PlayerAttack : MonoBehaviour
             transform.position = spawnPoint.position;
         }
 
-        // Listen for stat changes (equipment equip/unequip)
         if (playerStats != null)
         {
             playerStats.OnStatsChanged += UpdateAttackRange;
         }
 
-        // Initial range calculation
         UpdateAttackRange();
     }
 
@@ -81,14 +73,6 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // ============================================
-    // DYNAMIC ATTACK RANGE
-    // ============================================
-
-    /// <summary>
-    /// Recalculate attack range from base + equipment bonus.
-    /// Called automatically when equipment changes.
-    /// </summary>
     private void UpdateAttackRange()
     {
         float rangeBonus = 0f;
@@ -100,28 +84,17 @@ public class PlayerAttack : MonoBehaviour
 
         currentAttackRange = baseAttackRange + rangeBonus;
 
-        // Scale the circle visual to match new range
         UpdateRangeCircleScale();
 
         Debug.Log($"[PlayerAttack] Range updated: {baseAttackRange} + {rangeBonus} = {currentAttackRange}");
     }
-
-    /// <summary>
-    /// Scale the attack range circle to match currentAttackRange.
-    /// Works with a circle sprite/projector where scale 1 = 1 unit diameter.
-    /// </summary>
     private void UpdateRangeCircleScale()
     {
         if (attackRangeCircle == null) return;
 
-        // Diameter = range * 2, so scale = diameter
         float diameter = currentAttackRange * 2f;
         attackRangeCircle.transform.localScale = new Vector3(diameter, diameter, diameter);
     }
-
-    // ============================================
-    // ATTACK
-    // ============================================
 
     public void OnAttackHold()
     {
@@ -149,7 +122,6 @@ public class PlayerAttack : MonoBehaviour
 
         float damage = GetPlayerDamage();
 
-        // Use dynamic range for overlap sphere
         Collider[] hits = Physics.OverlapSphere(transform.position, currentAttackRange);
         int enemiesHit = 0;
 
@@ -201,13 +173,6 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // ============================================
-    // PUBLIC GETTER
-    // ============================================
-
-    /// <summary>
-    /// Get current final attack range (base + equipment)
-    /// </summary>
     public float GetCurrentAttackRange()
     {
         return currentAttackRange;
