@@ -62,13 +62,12 @@ public class GameOverUI : MonoBehaviour
     public void RestartGame()
     {
         Time.timeScale = 1f;
-        Scene currentScene = SceneManager.GetActiveScene();
-        SceneManager.LoadScene("Map1");
+        SceneManager.LoadScene("Main");
     }
 
     public void GoToMainMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MainMenuSceneName");
+        SceneManager.LoadScene("Menu");
     }
 }
