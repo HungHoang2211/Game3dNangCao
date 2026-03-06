@@ -69,7 +69,7 @@ public class EnemyKienAdapter : MonoBehaviour, IEnemy
 
         if (QuestManager.Instance != null)
         {
-            QuestManager.Instance.OnEnemyKilled();
+            QuestManager.Instance.OnEnemyKilled(gameObject.name);
         }
 
         if (animator != null)

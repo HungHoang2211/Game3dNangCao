@@ -71,7 +71,7 @@ public class EnemyVuAdapter : MonoBehaviour, IEnemy
 
         if (QuestManager.Instance != null)
         {
-            QuestManager.Instance.OnEnemyKilled();
+            QuestManager.Instance.OnEnemyKilled(gameObject.name);
         }
 
         if (enemyAI != null) enemyAI.enabled = false;
