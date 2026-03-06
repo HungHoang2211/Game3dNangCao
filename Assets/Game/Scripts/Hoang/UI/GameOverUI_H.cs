@@ -51,6 +51,8 @@ public class GameOverUI : MonoBehaviour
         }
         SetGroupActive(restartButtonCG, true);
         SetGroupActive(mainMenuButtonCG, true);
+        panelCanvasGroup.interactable = true;
+        panelCanvasGroup.blocksRaycasts = true;
     }
 
     void SetGroupActive(CanvasGroup cg, bool active)
@@ -61,13 +63,15 @@ public class GameOverUI : MonoBehaviour
 
     public void RestartGame()
     {
-        Time.timeScale = 1f;
+        Debug.Log("Press button");
+        Time.timeScale = 1f;  // thêm dòng này
         SceneManager.LoadScene("Main");
     }
 
     public void GoToMainMenu()
     {
-        Time.timeScale = 1f;
+        Debug.Log("Press button");
+        Time.timeScale = 1f;  // thêm dòng này
         SceneManager.LoadScene("Menu");
     }
 }

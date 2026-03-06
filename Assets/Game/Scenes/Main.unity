@@ -36938,7 +36938,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_TargetDisplay: 0
 --- !u!224 &856475827
 RectTransform:
@@ -109828,12 +109828,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fireBallPrefab: {fileID: 2972392977303283589, guid: 11c9a5d587e034e43a68d4ebfb901206, type: 3}
   firePoint: {fileID: 553830831}
-  audioSource: {fileID: 0}
-  fireBallSound: {fileID: 0}
   cooldown: 2
+  level3Balls: 5
+  level5Balls: 10
+  spreadAngle: 15
   cooldownOverlay: {fileID: 491827846}
   cooldownText: {fileID: 1593610183}
   fireButton: {fileID: 1055908446}
+  skillLevelText: {fileID: 0}
 --- !u!114 &5102316048198465839
 MonoBehaviour:
   m_ObjectHideFlags: 0
