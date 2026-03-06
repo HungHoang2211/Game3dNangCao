@@ -1,12 +1,26 @@
 ﻿using UnityEngine;
 
+/// <summary>
+/// Spawns weapon model on player's hand.
+/// Shows default weapon when nothing equipped.
+///
+/// SETUP:
+/// 1. Add to Player
+/// 2. Assign rightHandBone (from skeleton: Armature > ... > Hand.R)
+/// 3. Assign defaultWeaponPrefab (model vu khi mac dinh)
+/// 4. Adjust offset until weapon fits hand
+/// </summary>
 public class WeaponVisual : MonoBehaviour
 {
-    [Header("Attach Points")]
-    [Tooltip("Bone tay phải của nhân vật (kéo từ Armature > Hand.R)")]
+    [Header("Attach Point")]
+    [Tooltip("Bone tay phai cua nhan vat")]
     [SerializeField] private Transform rightHandBone;
 
-    [Header("Offset (tuỳ chỉnh cho khớp tay)")]
+    [Header("Default Weapon")]
+    [Tooltip("Vu khi mac dinh khi khong equip gi")]
+    [SerializeField] private GameObject defaultWeaponPrefab;
+
+    [Header("Offset")]
     [SerializeField] private Vector3 positionOffset = Vector3.zero;
     [SerializeField] private Vector3 rotationOffset = Vector3.zero;
     [SerializeField] private Vector3 scaleOverride = Vector3.one;
@@ -15,19 +29,27 @@ public class WeaponVisual : MonoBehaviour
     [SerializeField] private EquipmentManager equipmentManager;
 
     private GameObject currentWeaponInstance;
+    private bool isDefaultWeapon = false;
 
     void Start()
     {
         if (equipmentManager == null)
             equipmentManager = GetComponent<EquipmentManager>();
 
-        // Lắng nghe khi equipment thay đổi
-        equipmentManager.OnEquipmentChanged += HandleEquipmentChanged;
+        if (equipmentManager != null)
+            equipmentManager.OnEquipmentChanged += HandleEquipmentChanged;
 
-        // Nếu đã có weapon equipped sẵn (load save), spawn luôn
-        ItemObject weapon = equipmentManager.GetWeapon();
-        if (weapon != null)
-            SpawnWeapon(weapon);
+        // Check if already has weapon equipped
+        ItemObject weapon = equipmentManager != null ? equipmentManager.GetWeapon() : null;
+
+        if (weapon != null && weapon.equipPrefab != null)
+        {
+            SpawnWeapon(weapon.equipPrefab, false);
+        }
+        else
+        {
+            SpawnDefaultWeapon();
+        }
     }
 
     void OnDestroy()
@@ -38,41 +60,43 @@ public class WeaponVisual : MonoBehaviour
 
     private void HandleEquipmentChanged(EquipmentSlot slot, ItemObject item)
     {
-        // Chỉ xử lý slot Weapon
         if (slot != EquipmentSlot.Weapon) return;
 
-        if (item != null)
-            SpawnWeapon(item);
+        if (item != null && item.equipPrefab != null)
+        {
+            // Equip weapon -> show its model
+            SpawnWeapon(item.equipPrefab, false);
+        }
         else
-            DestroyCurrentWeapon();
+        {
+            // Unequip -> show default weapon
+            SpawnDefaultWeapon();
+        }
     }
 
-    private void SpawnWeapon(ItemObject item)
+    private void SpawnDefaultWeapon()
     {
-        // Xoá vũ khí cũ trước
+        if (defaultWeaponPrefab == null)
+        {
+            DestroyCurrentWeapon();
+            return;
+        }
+
+        SpawnWeapon(defaultWeaponPrefab, true);
+    }
+
+    private void SpawnWeapon(GameObject prefab, bool isDefault)
+    {
         DestroyCurrentWeapon();
 
-        if (item.equipPrefab == null)
-        {
-            Debug.LogWarning($"[WeaponVisual] {item.itemName} không có equipPrefab!");
-            return;
-        }
+        if (prefab == null || rightHandBone == null) return;
 
-        if (rightHandBone == null)
-        {
-            Debug.LogError("[WeaponVisual] Chưa gán rightHandBone!");
-            return;
-        }
+        currentWeaponInstance = Instantiate(prefab, rightHandBone);
+        // Prefab giữ nguyên local transform đã chỉnh sẵn bên trong nó
 
-        // Instantiate vũ khí làm con của bone tay
-        currentWeaponInstance = Instantiate(item.equipPrefab, rightHandBone);
+        isDefaultWeapon = isDefault;
 
-        // Áp dụng offset
-        currentWeaponInstance.transform.localPosition = positionOffset;
-        currentWeaponInstance.transform.localRotation = Quaternion.Euler(rotationOffset);
-        currentWeaponInstance.transform.localScale = scaleOverride;
-
-        Debug.Log($"[WeaponVisual] Spawned {item.itemName} on hand");
+        Debug.Log($"[WeaponVisual] Spawned {(isDefault ? "default" : "equipped")} weapon");
     }
 
     private void DestroyCurrentWeapon()

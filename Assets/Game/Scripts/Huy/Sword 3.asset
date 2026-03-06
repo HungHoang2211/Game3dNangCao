@@ -10,25 +10,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0f3986201390d404490d7711ab6ac3b6, type: 3}
-  m_Name: Item_IronOre
+  m_Name: Sword 3
   m_EditorClassIdentifier: 
-  id: 0
-  itemName: Iron Ore
-  icon: {fileID: 21300000, guid: b2352df64abcd62489bcc3094ec726e7, type: 3}
-  description: Iron Ore
-  itemType: 4
-  isStackable: 1
+  id: 8
+  itemName: Medium Sword
+  icon: {fileID: 21300000, guid: 14b68c3f94739b7498f7857a5d3604e4, type: 3}
+  description: 
+  itemType: 0
+  isStackable: 0
   maxStackSize: 99
-  buyPrice: 20
-  sellPrice: 5
-  damageBonus: 0
+  buyPrice: 0
+  sellPrice: 0
+  damageBonus: 40
   defenseBonus: 0
   speedBonus: 0
-  critRateBonus: 0
+  critRateBonus: 30
   attackRangeBonus: 0
   upgradeLevel: 0
   maxUpgradeLevel: 10
-  upgradeCostPerLevel: 100
+  upgradeCostPerLevel: 500
   upgradeColors:
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 0, g: 1, b: 0, a: 1}
@@ -38,4 +38,4 @@ MonoBehaviour:
   - {r: 1, g: 0.5, b: 0, a: 1}
   hpRestore: 0
   usableInCombat: 1
-  equipPrefab: {fileID: 0}
+  equipPrefab: {fileID: 673517105710634542, guid: 2dfa48dc1a07e544d8681461bb890022, type: 3}

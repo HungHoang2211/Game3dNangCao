@@ -25,7 +25,7 @@ MonoBehaviour:
   defenseBonus: 0
   speedBonus: 0
   critRateBonus: 50
-  attackRangeBonus: 1.5
+  attackRangeBonus: 1.4
   upgradeLevel: 0
   maxUpgradeLevel: 10
   upgradeCostPerLevel: 100
