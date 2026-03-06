@@ -3,23 +3,24 @@ using TMPro;
 using System;
 
 /// <summary>
-/// UPDATED: Added OnQuestCompleted event so portal knows when to appear.
-/// Also added isCompleted flag for checking.
+/// Quest: Kill specific boss enemy.
+/// Enemy adapters call OnEnemyKilled(enemyName) when dying.
 /// </summary>
 public class QuestManager : MonoBehaviour
 {
     public static QuestManager Instance;
 
     [Header("Quest Setting")]
-    public int killTarget = 5;
-    private int currentKill = 0;
+    [Tooltip("Name to match (case-insensitive, checks Contains)")]
+    public string bossName = "Boss";
+
     private bool isCompleted = false;
 
     [Header("UI")]
     public TextMeshProUGUI questText;
     public GameObject completeText;
 
-    // Event - portal listens to this
+    // Event - Portal listens to this
     public event Action OnQuestCompleted;
 
     private void Awake()
@@ -35,26 +36,40 @@ public class QuestManager : MonoBehaviour
             completeText.SetActive(false);
     }
 
-    public void OnEnemyKilled()
+    /// <summary>
+    /// Called by enemy adapter Die() with enemy GameObject name.
+    /// </summary>
+    public void OnEnemyKilled(string enemyName)
     {
         if (isCompleted) return;
 
-        currentKill++;
-        UpdateUI();
+        Debug.Log($"[QuestManager] Enemy killed: {enemyName}");
 
-        Debug.Log("Kill: " + currentKill);
-
-        if (currentKill >= killTarget)
+        // Check if killed enemy is the boss
+        if (enemyName.ToLower().Contains(bossName.ToLower()))
         {
             CompleteQuest();
         }
+    }
+
+    // Keep old method working for non-boss enemies (no effect on quest)
+    public void OnEnemyKilled()
+    {
+        // Does nothing for boss quest, but won't break existing enemy adapters
     }
 
     void UpdateUI()
     {
         if (questText != null)
         {
-            questText.text = "Kill Enemies (" + currentKill + "/" + killTarget + ")";
+            if (isCompleted)
+            {
+                questText.text = $"Defeat {bossName} (Completed!)";
+            }
+            else
+            {
+                questText.text = $"Defeat {bossName}";
+            }
         }
     }
 
@@ -63,37 +78,27 @@ public class QuestManager : MonoBehaviour
         if (isCompleted) return;
         isCompleted = true;
 
+        Debug.Log("[QuestManager] Boss defeated! Quest completed!");
+
+        UpdateUI();
+
         if (completeText != null)
-        {
             completeText.SetActive(true);
-        }
 
-        Debug.Log("[QuestManager] Quest completed! Portal opening...");
-
-        // Fire event - portal will listen and appear
         OnQuestCompleted?.Invoke();
     }
 
-    /// <summary>
-    /// Check if quest is done (for portal or other scripts)
-    /// </summary>
     public bool IsQuestCompleted()
     {
         return isCompleted;
     }
 
-    /// <summary>
-    /// Reset quest (called when map resets)
-    /// </summary>
     public void ResetQuest()
     {
-        currentKill = 0;
         isCompleted = false;
         UpdateUI();
 
         if (completeText != null)
             completeText.SetActive(false);
-
-        Debug.Log("[QuestManager] Quest reset");
     }
 }
